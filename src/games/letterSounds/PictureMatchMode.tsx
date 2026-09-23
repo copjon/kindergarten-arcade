@@ -2,10 +2,12 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { LETTERS, randomPicture, type LetterInfo } from '../../data/letters';
 import { CHEERS, OOPS, pickRandom } from '../../data/phrases';
 import { SpeechBubble } from '../../components/SpeechBubble';
+import { BlastBurst } from '../../components/BlastBurst';
 import type { useSpeech } from '../../hooks/useSpeech';
 import { SessionReport, type LetterResult } from './SessionReport';
 import { saveSessionEntry } from '../../lib/history';
 import { SLOW_ANSWER_MS } from '../../lib/constants';
+import { playBlasterSound } from '../../lib/sound';
 
 const GAME_ID = 'letter-sounds';
 const GAME_TITLE = 'Alpha Blast';
@@ -61,6 +63,7 @@ export function PictureMatchMode({ speech }: Props) {
   const [wrongLetter, setWrongLetter] = useState<string | null>(null);
   const [rightLetter, setRightLetter] = useState<string | null>(null);
   const [phase, setPhase] = useState<'playing' | 'report'>('playing');
+  const [scoreBump, setScoreBump] = useState(false);
   const roundStart = useRef(Date.now());
   const savedRef = useRef(false);
 
@@ -104,6 +107,9 @@ export function PictureMatchMode({ speech }: Props) {
     if (option.letter === round.target.letter) {
       setBusy(true);
       setRightLetter(option.letter);
+      playBlasterSound();
+      setScoreBump(false);
+      requestAnimationFrame(() => setScoreBump(true));
       const timeMs = Date.now() - roundStart.current;
       const bonus = timeBonusFor(timeMs);
       const points = (missedThisRound ? RETRY_POINTS : FIRST_TRY_POINTS) + bonus;
@@ -169,7 +175,7 @@ export function PictureMatchMode({ speech }: Props) {
           <span>
             Letter {index + 1} of {sessionOrder.length}
           </span>
-          <span className="quiz-score">⭐ {score} pts</span>
+          <span className={`quiz-score ${scoreBump ? 'bump' : ''}`}>⭐ {score} pts</span>
         </div>
         <div className="progress-track">
           <div
@@ -197,6 +203,7 @@ export function PictureMatchMode({ speech }: Props) {
               aria-label={opt.word}
             >
               {opt.emoji}
+              {rightLetter === opt.letter && <BlastBurst />}
             </button>
           ))}
         </div>
