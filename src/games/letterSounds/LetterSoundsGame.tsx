@@ -12,7 +12,7 @@ export function LetterSoundsGame({ onExit }: { onExit: () => void }) {
   const speech = useSpeech();
 
   return (
-    <GameShell title="Letter Sounds" emoji="🔤" onExit={onExit} headerExtra={<VoicePicker speech={speech} />}>
+    <GameShell title="Alpha Blast" emoji="🚀" onExit={onExit} headerExtra={<VoicePicker speech={speech} />}>
       <div className="mode-toggle" role="group" aria-label="Choose a game mode">
         <button
           className={`mode-pill ${mode === 'match' ? 'active' : ''}`}

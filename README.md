@@ -1,12 +1,14 @@
 # Kindergarten Arcade
 
-A little React SPA of learning games for kindergartners, with a 90s-pizza-parlor-arcade look. Phonics today, more subjects (starting with math) on the way. Built entirely with [Claude Code](https://claude.com/claude-code).
+A little React SPA of learning games for kindergartners, with an 8-bit arcade look. Phonics today, more subjects (starting with math) on the way. Built entirely with [Claude Code](https://claude.com/claude-code).
 
 🔗 **Play it here:** https://copjon.github.io/kindergarten-arcade/
 
 ## Games
 
-### Letter Sounds
+### Alpha Blast
+
+*(letter recognition and phonics)*
 
 - **Explore Letters** — browse the alphabet, hear each letter's name and sound, and see a picture for a word that starts with it. Tap the picture for another example — every letter has several so it doesn't turn into rote memorization.
 - **Picture Match** — hear/see a letter and tap the picture whose word starts with it. Runs through all 26 letters, scores points (with a speed bonus for quick, correct first tries), and ends with a report of which letters need more practice — flagged either because they were missed or because they took a while to answer.

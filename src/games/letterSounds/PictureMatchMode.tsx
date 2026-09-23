@@ -8,7 +8,7 @@ import { saveSessionEntry } from '../../lib/history';
 import { SLOW_ANSWER_MS } from '../../lib/constants';
 
 const GAME_ID = 'letter-sounds';
-const GAME_TITLE = 'Letter Sounds';
+const GAME_TITLE = 'Alpha Blast';
 
 type Speech = ReturnType<typeof useSpeech>;
 
