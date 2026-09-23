@@ -517,6 +517,26 @@ button {
   transform: translateY(2px) scale(0.97);
 }
 
+.match-picture {
+  font-size: clamp(3.4rem, 15vw, 5rem);
+  line-height: 1;
+  border: none;
+  cursor: pointer;
+  background: none;
+  padding: 4px 14px;
+  border-radius: 10px;
+  filter: drop-shadow(0 6px 6px var(--shadow));
+  transition: transform 0.12s ease;
+}
+
+.match-picture:hover {
+  transform: translateY(-2px);
+}
+
+.match-picture:active {
+  transform: translateY(2px) scale(0.97);
+}
+
 .quiz-options {
   display: grid;
   grid-template-columns: repeat(2, minmax(100px, 1fr));

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { LETTERS, randomPicture, type LetterInfo } from '../../data/letters';
+import { LETTERS, randomPicture, type LetterInfo, type LetterPicture } from '../../data/letters';
 import { CHEERS, OOPS, pickRandom } from '../../data/phrases';
 import { SpeechBubble } from '../../components/SpeechBubble';
 import { BlastBurst } from '../../components/BlastBurst';
@@ -19,15 +19,27 @@ interface Props {
   speech: Speech;
 }
 
+type RoundMode = 'pickPicture' | 'pickLetter';
+
 interface RoundOption {
   letter: string;
-  word: string;
-  emoji: string;
+  word?: string;
+  emoji?: string;
+}
+
+interface Round {
+  mode: RoundMode;
+  target: LetterInfo;
+  picture: LetterPicture;
+  options: RoundOption[];
 }
 
 const FIRST_TRY_POINTS = 10;
 const RETRY_POINTS = 5;
-const DEFAULT_PROMPT = 'Which picture starts with this letter?';
+const PROMPTS: Record<RoundMode, string> = {
+  pickPicture: 'Which picture starts with this letter?',
+  pickLetter: 'Which letter does this picture start with?',
+};
 
 function shuffle<T>(arr: T[]): T[] {
   return [...arr].sort(() => Math.random() - 0.5);
@@ -44,12 +56,18 @@ function timeBonusFor(ms: number): number {
   return 0;
 }
 
-function buildRound(letter: string): { target: LetterInfo; options: RoundOption[] } {
+function buildRound(letter: string): Round {
   const target = LETTERS.find((l) => l.letter === letter)!;
-  const targetOption: RoundOption = { letter: target.letter, ...randomPicture(target) };
+  const picture = randomPicture(target);
+  const mode: RoundMode = Math.random() < 0.5 ? 'pickPicture' : 'pickLetter';
   const distractorLetters = shuffle(LETTERS.filter((l) => l.letter !== letter)).slice(0, 3);
-  const distractorOptions: RoundOption[] = distractorLetters.map((l) => ({ letter: l.letter, ...randomPicture(l) }));
-  return { target, options: shuffle([targetOption, ...distractorOptions]) };
+
+  const options: RoundOption[] =
+    mode === 'pickPicture'
+      ? shuffle([{ letter: target.letter, ...picture }, ...distractorLetters.map((l) => ({ letter: l.letter, ...randomPicture(l) }))])
+      : shuffle([{ letter: target.letter }, ...distractorLetters.map((l) => ({ letter: l.letter }))]);
+
+  return { mode, target, picture, options };
 }
 
 export function PictureMatchMode({ speech }: Props) {
@@ -59,7 +77,7 @@ export function PictureMatchMode({ speech }: Props) {
   const [score, setScore] = useState(0);
   const [results, setResults] = useState<Record<string, LetterResult>>({});
   const [missedThisRound, setMissedThisRound] = useState(false);
-  const [message, setMessage] = useState(DEFAULT_PROMPT);
+  const [message, setMessage] = useState(() => PROMPTS[round.mode]);
   const [busy, setBusy] = useState(false);
   const [wrongLetter, setWrongLetter] = useState<string | null>(null);
   const [rightLetter, setRightLetter] = useState<string | null>(null);
@@ -73,18 +91,23 @@ export function PictureMatchMode({ speech }: Props) {
     speech.speak(round.target.letter.toUpperCase(), { rate: 0.8, pitch: 1.2 });
   }, [speech, round.target]);
 
+  const hearPicture = useCallback(() => {
+    speech.speak(round.picture.word, { rate: 0.85, pitch: 1.2 });
+  }, [speech, round.picture]);
+
   function startNewSession() {
     const order = newSessionOrder();
+    const firstRound = buildRound(order[0]);
     setSessionOrder(order);
     setIndex(0);
-    setRound(buildRound(order[0]));
+    setRound(firstRound);
     setScore(0);
     setResults({});
     setMissedThisRound(false);
     setWrongLetter(null);
     setRightLetter(null);
     setShotLetter(null);
-    setMessage(DEFAULT_PROMPT);
+    setMessage(PROMPTS[firstRound.mode]);
     setPhase('playing');
     roundStart.current = Date.now();
     savedRef.current = false;
@@ -96,13 +119,14 @@ export function PictureMatchMode({ speech }: Props) {
       setPhase('report');
       return;
     }
+    const nextRound = buildRound(sessionOrder[next]);
     setIndex(next);
-    setRound(buildRound(sessionOrder[next]));
+    setRound(nextRound);
     setMissedThisRound(false);
     setWrongLetter(null);
     setRightLetter(null);
     setShotLetter(null);
-    setMessage(DEFAULT_PROMPT);
+    setMessage(PROMPTS[nextRound.mode]);
     roundStart.current = Date.now();
   }
 
@@ -122,7 +146,7 @@ export function PictureMatchMode({ speech }: Props) {
       setScore((s) => s + points);
       setResults((prev) => ({ ...prev, [option.letter]: { missedFirstTry: missedThisRound, timeMs, points } }));
       setMessage(!missedThisRound && bonus >= 5 ? 'Lightning fast! ⚡' : pickRandom(CHEERS));
-      await speech.speak(`${option.letter.toUpperCase()} is for ${option.word}`, { rate: 0.85, pitch: 1.2 });
+      await speech.speak(`${option.letter.toUpperCase()} is for ${round.picture.word}`, { rate: 0.85, pitch: 1.2 });
       setTimeout(() => {
         setBusy(false);
         advance();
@@ -176,6 +200,8 @@ export function PictureMatchMode({ speech }: Props) {
     );
   }
 
+  const isPickPicture = round.mode === 'pickPicture';
+
   return (
     <section className="quiz-mode">
       <SpeechBubble message={message} />
@@ -195,24 +221,39 @@ export function PictureMatchMode({ speech }: Props) {
         </div>
 
         <div className="match-target">
-          <button className="match-letter" onClick={hearLetter} aria-label={`Hear the letter ${round.target.letter}`}>
-            {round.target.letter.toUpperCase()}
-            {round.target.letter}
-          </button>
+          {isPickPicture ? (
+            <button className="match-letter" onClick={hearLetter} aria-label={`Hear the letter ${round.target.letter}`}>
+              {round.target.letter.toUpperCase()}
+              {round.target.letter}
+            </button>
+          ) : (
+            <button className="match-picture" onClick={hearPicture} aria-label={`Hear the word for this picture`}>
+              {round.picture.emoji}
+            </button>
+          )}
         </div>
-        <p className="quiz-question">Tap the picture that starts with this letter</p>
+        <p className="quiz-question">
+          {isPickPicture ? 'Tap the picture that starts with this letter' : 'Tap the letter this picture starts with'}
+        </p>
 
-        <div className="quiz-options picture-options">
+        <div className={`quiz-options ${isPickPicture ? 'picture-options' : ''}`}>
           {round.options.map((opt) => (
             <button
-              key={`${opt.letter}-${opt.word}`}
-              className={`opt picture-opt ${rightLetter === opt.letter ? 'right' : ''} ${
+              key={opt.letter}
+              className={`opt ${isPickPicture ? 'picture-opt' : ''} ${rightLetter === opt.letter ? 'right' : ''} ${
                 wrongLetter === opt.letter ? 'wrong' : ''
               }`}
               onClick={() => choose(opt)}
-              aria-label={opt.word}
+              aria-label={isPickPicture ? opt.word : `letter ${opt.letter}`}
             >
-              {opt.emoji}
+              {isPickPicture ? (
+                opt.emoji
+              ) : (
+                <>
+                  {opt.letter.toUpperCase()}
+                  {opt.letter}
+                </>
+              )}
               {shotLetter === opt.letter && <LaserShot />}
               {rightLetter === opt.letter && <BlastBurst />}
             </button>
