@@ -10,10 +10,12 @@ export function Home({ onSelectGame, onShowParents }: Props) {
   return (
     <div className="home">
       <header className="home-header">
-        <h1>
-          Phonics <span className="accent">Playground</span>
-        </h1>
-        <p className="home-subtitle">Pick a game and start reading!</p>
+        <div className="marquee">
+          <h1>
+            Kindergarten <span className="accent">Arcade</span>
+          </h1>
+        </div>
+        <p className="home-subtitle">🪙 Pick a game and start playing!</p>
       </header>
       <div className="game-grid">
         {GAMES.map((game) => (

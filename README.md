@@ -1,6 +1,6 @@
-# Phonics Playground
+# Kindergarten Arcade
 
-A little React SPA of phonics games for early readers. Built entirely with [Claude Code](https://claude.com/claude-code).
+A little React SPA of learning games for kindergartners, with a 90s-pizza-parlor-arcade look. Phonics today, more subjects (starting with math) on the way. Built entirely with [Claude Code](https://claude.com/claude-code).
 
 🔗 **Play it here:** https://copjon.github.io/kindergarten-arcade/
 

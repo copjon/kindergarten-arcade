@@ -1,22 +1,26 @@
-@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@500;600;700&display=swap');
 
 :root {
-  --coral: #ff6b6b;
-  --coral-deep: #e0524f;
-  --teal: #2ec4b6;
-  --teal-deep: #1f9c91;
-  --gold: #ffc145;
-  --gold-deep: #d99f22;
-  --purple: #7c5cfc;
-  --purple-deep: #5f3fe0;
-  --mint: #06d6a0;
-  --ink: #26263a;
-  --ink-soft: #6a6a80;
-  --bg-top: #fef6e4;
-  --bg-bottom: #eaf6ff;
+  --coral: #ff2d6d;
+  --coral-deep: #c4114f;
+  --teal: #00e5ff;
+  --teal-deep: #00a8c7;
+  --gold: #ffd500;
+  --gold-deep: #d9a400;
+  --purple: #8b3cff;
+  --purple-deep: #5e1fcc;
+  --mint: #00ff9c;
+  --ink: #1d1533;
+  --ink-soft: #6b5f8f;
+  --bg-top: #fff3d6;
+  --bg-bottom: #ffe1ee;
   --card: #ffffff;
-  --line: #eadcc3;
-  --shadow: rgba(38, 38, 58, 0.16);
+  --line: #ffd1e0;
+  --shadow: rgba(29, 21, 51, 0.18);
+  --arcade-bg: #150f30;
+  --arcade-grid: rgba(0, 229, 255, 0.09);
+  --on-dark: #f4f1ff;
+  --on-dark-soft: #b7abe6;
 }
 
 * {
@@ -33,7 +37,12 @@ body,
 body {
   font-family: 'Quicksand', system-ui, sans-serif;
   color: var(--ink);
-  background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+  background-color: var(--arcade-bg);
+  background-image: linear-gradient(var(--arcade-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--arcade-grid) 1px, transparent 1px),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.025) 0px, rgba(255, 255, 255, 0.025) 1px, transparent 1px, transparent 3px);
+  background-size: 28px 28px, 28px 28px, 100% 3px;
+  background-attachment: fixed;
   min-height: 100dvh;
   -webkit-tap-highlight-color: transparent;
 }
@@ -70,13 +79,27 @@ button {
   text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  align-items: center;
+  gap: 10px;
+}
+
+.marquee {
+  background: var(--card);
+  border: 4px solid var(--ink);
+  border-radius: 10px;
+  padding: 22px 24px 18px;
+  box-shadow: 0 0 0 4px var(--teal), 0 0 26px 4px rgba(0, 229, 255, 0.45), 0 10px 0 var(--ink), 0 22px 36px rgba(0, 0, 0, 0.55);
 }
 
 .home-header h1 {
-  font-size: clamp(2rem, 6vw, 3rem);
-  font-weight: 800;
+  font-family: 'Press Start 2P', 'Baloo 2', sans-serif;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0;
+  font-size: clamp(1rem, 5.2vw, 1.8rem);
   color: var(--ink);
+  text-shadow: 3px 3px 0 var(--gold);
+  line-height: 1.6;
 }
 
 .home-header .accent {
@@ -84,10 +107,11 @@ button {
 }
 
 .home-subtitle {
-  color: var(--ink-soft);
-  font-weight: 600;
+  color: var(--on-dark);
+  font-weight: 700;
   font-size: 1.1rem;
   margin: 0;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.4);
 }
 
 .game-grid {
@@ -99,8 +123,8 @@ button {
 .game-card {
   --card-tint: var(--coral);
   background: var(--card);
-  border: none;
-  border-radius: 24px;
+  border: 4px solid var(--card-tint);
+  border-radius: 14px;
   padding: 28px 20px;
   display: flex;
   flex-direction: column;
@@ -108,7 +132,7 @@ button {
   gap: 8px;
   text-align: center;
   cursor: pointer;
-  box-shadow: 0 6px 0 var(--line), 0 14px 26px var(--shadow);
+  box-shadow: 0 6px 0 var(--card-tint), 0 14px 26px var(--shadow);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
@@ -118,7 +142,7 @@ button {
 
 .game-card:active {
   transform: translateY(2px);
-  box-shadow: 0 3px 0 var(--line), 0 8px 16px var(--shadow);
+  box-shadow: 0 3px 0 var(--card-tint), 0 8px 16px var(--shadow);
 }
 
 .game-card-emoji {
@@ -160,8 +184,13 @@ button {
 .game-shell-bar h2 {
   flex: 1;
   text-align: center;
-  font-size: clamp(1.3rem, 4.5vw, 1.8rem);
-  color: var(--ink);
+  font-family: 'Press Start 2P', 'Baloo 2', sans-serif;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0;
+  font-size: clamp(0.75rem, 3.6vw, 1.1rem);
+  color: var(--on-dark);
+  text-shadow: 2px 2px 0 var(--gold-deep);
 }
 
 .game-shell-bar-end {
@@ -175,7 +204,7 @@ button {
   cursor: pointer;
   background: var(--card);
   color: var(--ink);
-  border-radius: 999px;
+  border-radius: 10px;
   padding: 10px 16px;
   box-shadow: 0 3px 0 var(--line);
   transition: transform 0.1s ease;
@@ -193,7 +222,7 @@ button {
   gap: 8px;
   font-weight: 700;
   font-size: 0.85rem;
-  color: var(--ink-soft);
+  color: var(--on-dark-soft);
   flex-wrap: wrap;
   justify-content: flex-end;
 }
@@ -204,7 +233,7 @@ button {
   color: var(--ink);
   background: var(--card);
   border: none;
-  border-radius: 999px;
+  border-radius: 10px;
   padding: 8px 12px;
   box-shadow: 0 3px 0 var(--line);
   cursor: pointer;
@@ -218,7 +247,7 @@ button {
   cursor: pointer;
   background: var(--purple);
   color: #fff;
-  border-radius: 999px;
+  border-radius: 10px;
   padding: 8px 14px;
   box-shadow: 0 3px 0 var(--purple-deep);
 }
@@ -234,7 +263,7 @@ button {
   gap: 8px;
   justify-content: center;
   background: var(--card);
-  border-radius: 999px;
+  border-radius: 10px;
   padding: 6px;
   box-shadow: 0 3px 0 var(--line);
   align-self: center;
@@ -247,7 +276,7 @@ button {
   border: none;
   cursor: pointer;
   padding: 10px 18px;
-  border-radius: 999px;
+  border-radius: 8px;
   background: transparent;
   color: var(--ink);
 }
@@ -266,7 +295,7 @@ button {
 
 .bubble {
   background: var(--card);
-  border-radius: 20px;
+  border-radius: 10px;
   padding: 12px 20px;
   font-family: 'Baloo 2', sans-serif;
   font-weight: 600;
@@ -303,7 +332,7 @@ button {
 
 .letter-spotlight {
   background: var(--card);
-  border-radius: 28px;
+  border-radius: 14px;
   box-shadow: 0 10px 0 rgba(0, 0, 0, 0.04), 0 20px 40px var(--shadow);
   padding: 28px 20px;
   display: flex;
@@ -377,7 +406,7 @@ button {
   border: none;
   cursor: pointer;
   padding: 12px 18px;
-  border-radius: 16px;
+  border-radius: 10px;
   color: #fff;
   box-shadow: 0 4px 0 var(--btn-deep, #0006);
   transition: transform 0.1s ease;
@@ -417,7 +446,7 @@ button {
   text-transform: none;
   background: var(--card);
   border: none;
-  border-radius: 14px;
+  border-radius: 8px;
   padding: 12px 4px;
   cursor: pointer;
   color: var(--ink);
@@ -445,7 +474,7 @@ button {
 
 .quiz-stage {
   background: var(--card);
-  border-radius: 28px;
+  border-radius: 14px;
   box-shadow: 0 10px 0 rgba(0, 0, 0, 0.04), 0 20px 40px var(--shadow);
   padding: 28px 20px;
   display: flex;
@@ -476,7 +505,7 @@ button {
   background: none;
   color: var(--coral);
   padding: 4px 14px;
-  border-radius: 20px;
+  border-radius: 10px;
   transition: transform 0.12s ease;
 }
 
@@ -503,7 +532,7 @@ button {
   border: none;
   cursor: pointer;
   padding: 18px 10px;
-  border-radius: 18px;
+  border-radius: 10px;
   background: #fff;
   color: var(--ink);
   box-shadow: 0 5px 0 var(--line);
@@ -589,7 +618,7 @@ button {
 
 .report-card {
   background: var(--card);
-  border-radius: 28px;
+  border-radius: 14px;
   box-shadow: 0 10px 0 rgba(0, 0, 0, 0.04), 0 20px 40px var(--shadow);
   padding: 32px 24px;
   display: flex;
@@ -654,7 +683,7 @@ button {
 
 .review-chip {
   background: var(--bg-bottom);
-  border-radius: 14px;
+  border-radius: 8px;
   padding: 10px 6px;
   display: flex;
   flex-direction: column;
@@ -711,7 +740,7 @@ button {
   border: none;
   cursor: pointer;
   background: none;
-  color: var(--ink-soft);
+  color: var(--on-dark-soft);
   text-decoration: underline;
   padding: 8px;
   margin-top: 8px;
@@ -736,7 +765,13 @@ button {
 .parents-bar h2 {
   flex: 1;
   text-align: center;
-  font-size: clamp(1.2rem, 4.5vw, 1.6rem);
+  font-family: 'Press Start 2P', 'Baloo 2', sans-serif;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0;
+  font-size: clamp(0.7rem, 3.4vw, 1rem);
+  color: var(--on-dark);
+  text-shadow: 2px 2px 0 var(--gold-deep);
 }
 
 .parents-bar-end {
@@ -748,11 +783,15 @@ button {
   color: var(--ink-soft);
   font-weight: 700;
   margin-top: 40px;
+  background: var(--card);
+  border-radius: 14px;
+  box-shadow: 0 8px 0 rgba(0, 0, 0, 0.04), 0 16px 32px var(--shadow);
+  padding: 28px 20px;
 }
 
 .parents-card {
   background: var(--card);
-  border-radius: 24px;
+  border-radius: 14px;
   box-shadow: 0 8px 0 rgba(0, 0, 0, 0.04), 0 16px 32px var(--shadow);
   padding: 20px 20px 24px;
 }
@@ -793,7 +832,7 @@ button {
 
 .history-row {
   border: 1px solid var(--line);
-  border-radius: 16px;
+  border-radius: 10px;
   padding: 12px 14px;
   display: flex;
   flex-direction: column;
