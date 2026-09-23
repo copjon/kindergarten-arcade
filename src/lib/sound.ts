@@ -14,29 +14,64 @@ function getAudioContext(): AudioContext | null {
   return audioContext;
 }
 
-function sweep(ctx: AudioContext, type: OscillatorType, startFreq: number, endFreq: number, peakGain: number, duration: number) {
-  const now = ctx.currentTime;
+function sweep(
+  ctx: AudioContext,
+  type: OscillatorType,
+  startFreq: number,
+  endFreq: number,
+  peakGain: number,
+  duration: number,
+  startAt: number,
+) {
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
 
   osc.type = type;
-  osc.frequency.setValueAtTime(startFreq, now);
-  osc.frequency.exponentialRampToValueAtTime(endFreq, now + duration);
+  osc.frequency.setValueAtTime(startFreq, startAt);
+  osc.frequency.exponentialRampToValueAtTime(endFreq, startAt + duration);
+
+  gain.gain.setValueAtTime(0.0001, startAt);
+  gain.gain.exponentialRampToValueAtTime(peakGain, startAt + duration * 0.08);
+  gain.gain.exponentialRampToValueAtTime(0.0001, startAt + duration);
+
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start(startAt);
+  osc.stop(startAt + duration + 0.02);
+}
+
+function laserPulse(ctx: AudioContext, startAt: number) {
+  sweep(ctx, 'sawtooth', 1600, 140, 0.28, 0.16, startAt);
+  sweep(ctx, 'square', 2200, 300, 0.09, 0.1, startAt);
+}
+
+/** Two quick 8-bit laser "pew-pew" pulses for a correct answer. */
+export function playBlasterSound(): void {
+  const ctx = getAudioContext();
+  if (!ctx) return;
+  const now = ctx.currentTime;
+  laserPulse(ctx, now);
+  laserPulse(ctx, now + 0.14);
+}
+
+/** A short low buzzer for a wrong answer. */
+export function playErrorSound(): void {
+  const ctx = getAudioContext();
+  if (!ctx) return;
+  const now = ctx.currentTime;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+
+  osc.type = 'square';
+  osc.frequency.setValueAtTime(220, now);
+  osc.frequency.linearRampToValueAtTime(100, now + 0.22);
 
   gain.gain.setValueAtTime(0.0001, now);
-  gain.gain.exponentialRampToValueAtTime(peakGain, now + duration * 0.08);
-  gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+  gain.gain.exponentialRampToValueAtTime(0.18, now + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.24);
 
   osc.connect(gain);
   gain.connect(ctx.destination);
   osc.start(now);
-  osc.stop(now + duration + 0.02);
-}
-
-/** Classic 8-bit laser "pew" for a correct answer. */
-export function playBlasterSound(): void {
-  const ctx = getAudioContext();
-  if (!ctx) return;
-  sweep(ctx, 'sawtooth', 1600, 140, 0.25, 0.2);
-  sweep(ctx, 'square', 2200, 300, 0.08, 0.12);
+  osc.stop(now + 0.26);
 }

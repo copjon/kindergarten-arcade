@@ -3,11 +3,12 @@ import { LETTERS, randomPicture, type LetterInfo } from '../../data/letters';
 import { CHEERS, OOPS, pickRandom } from '../../data/phrases';
 import { SpeechBubble } from '../../components/SpeechBubble';
 import { BlastBurst } from '../../components/BlastBurst';
+import { LaserShot } from '../../components/LaserShot';
 import type { useSpeech } from '../../hooks/useSpeech';
 import { SessionReport, type LetterResult } from './SessionReport';
 import { saveSessionEntry } from '../../lib/history';
 import { SLOW_ANSWER_MS } from '../../lib/constants';
-import { playBlasterSound } from '../../lib/sound';
+import { playBlasterSound, playErrorSound } from '../../lib/sound';
 
 const GAME_ID = 'letter-sounds';
 const GAME_TITLE = 'Alpha Blast';
@@ -62,6 +63,7 @@ export function PictureMatchMode({ speech }: Props) {
   const [busy, setBusy] = useState(false);
   const [wrongLetter, setWrongLetter] = useState<string | null>(null);
   const [rightLetter, setRightLetter] = useState<string | null>(null);
+  const [shotLetter, setShotLetter] = useState<string | null>(null);
   const [phase, setPhase] = useState<'playing' | 'report'>('playing');
   const [scoreBump, setScoreBump] = useState(false);
   const roundStart = useRef(Date.now());
@@ -81,6 +83,7 @@ export function PictureMatchMode({ speech }: Props) {
     setMissedThisRound(false);
     setWrongLetter(null);
     setRightLetter(null);
+    setShotLetter(null);
     setMessage(DEFAULT_PROMPT);
     setPhase('playing');
     roundStart.current = Date.now();
@@ -98,12 +101,15 @@ export function PictureMatchMode({ speech }: Props) {
     setMissedThisRound(false);
     setWrongLetter(null);
     setRightLetter(null);
+    setShotLetter(null);
     setMessage(DEFAULT_PROMPT);
     roundStart.current = Date.now();
   }
 
   async function choose(option: RoundOption) {
     if (busy) return;
+    setShotLetter(null);
+    requestAnimationFrame(() => setShotLetter(option.letter));
     if (option.letter === round.target.letter) {
       setBusy(true);
       setRightLetter(option.letter);
@@ -125,7 +131,11 @@ export function PictureMatchMode({ speech }: Props) {
       setWrongLetter(option.letter);
       setMissedThisRound(true);
       setMessage(pickRandom(OOPS));
-      setTimeout(() => setWrongLetter(null), 450);
+      playErrorSound();
+      setTimeout(() => {
+        setWrongLetter(null);
+        setShotLetter(null);
+      }, 450);
     }
   }
 
@@ -203,6 +213,7 @@ export function PictureMatchMode({ speech }: Props) {
               aria-label={opt.word}
             >
               {opt.emoji}
+              {shotLetter === opt.letter && <LaserShot />}
               {rightLetter === opt.letter && <BlastBurst />}
             </button>
           ))}
