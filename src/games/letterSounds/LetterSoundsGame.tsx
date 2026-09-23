@@ -15,18 +15,18 @@ export function LetterSoundsGame({ onExit }: { onExit: () => void }) {
     <GameShell title="Letter Sounds" emoji="🔤" onExit={onExit} headerExtra={<VoicePicker speech={speech} />}>
       <div className="mode-toggle" role="group" aria-label="Choose a game mode">
         <button
-          className={`mode-pill ${mode === 'explore' ? 'active' : ''}`}
-          onClick={() => setMode('explore')}
-          aria-pressed={mode === 'explore'}
-        >
-          🎈 Explore Letters
-        </button>
-        <button
           className={`mode-pill ${mode === 'match' ? 'active' : ''}`}
           onClick={() => setMode('match')}
           aria-pressed={mode === 'match'}
         >
           🖼️ Picture Match
+        </button>
+        <button
+          className={`mode-pill ${mode === 'explore' ? 'active' : ''}`}
+          onClick={() => setMode('explore')}
+          aria-pressed={mode === 'explore'}
+        >
+          🎈 Explore Letters
         </button>
       </div>
 
