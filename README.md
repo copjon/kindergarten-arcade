@@ -2,7 +2,7 @@
 
 A little React SPA of phonics games for early readers. Built entirely with [Claude Code](https://claude.com/claude-code).
 
-🔗 **Play it here:** https://copjon.github.io/phonics-arcade/
+🔗 **Play it here:** https://copjon.github.io/kindergarten-arcade/
 
 ## Games
 
