@@ -19,8 +19,8 @@ export const LETTERS: LetterInfo[] = [
     pictures: [
       { word: 'apple', emoji: '🍎' },
       { word: 'ant', emoji: '🐜' },
-      { word: 'axe', emoji: '🪓' },
-      { word: 'anchor', emoji: '⚓' },
+      { word: 'avocado', emoji: '🥑' },
+      { word: 'astronaut', emoji: '👨‍🚀' },
     ],
   },
   {
@@ -69,8 +69,8 @@ export const LETTERS: LetterInfo[] = [
     pictures: [
       { word: 'fish', emoji: '🐟' },
       { word: 'frog', emoji: '🐸' },
-      { word: 'feather', emoji: '🪶' },
-      { word: 'fan', emoji: '🪭' },
+      { word: 'flower', emoji: '🌸' },
+      { word: 'fire', emoji: '🔥' },
     ],
   },
   {
@@ -97,8 +97,8 @@ export const LETTERS: LetterInfo[] = [
     letter: 'i',
     sound: 'ih',
     pictures: [
-      { word: 'iguana', emoji: '🦎' },
       { word: 'ice cream', emoji: '🍦' },
+      { word: 'ice', emoji: '🧊' },
     ],
   },
   {
@@ -106,7 +106,8 @@ export const LETTERS: LetterInfo[] = [
     sound: 'juh',
     pictures: [
       { word: 'juice', emoji: '🧃' },
-      { word: 'joystick', emoji: '🕹️' },
+      { word: 'jacket', emoji: '🧥' },
+      { word: 'jar', emoji: '🫙' },
     ],
   },
   {
@@ -146,7 +147,7 @@ export const LETTERS: LetterInfo[] = [
       { word: 'nose', emoji: '👃' },
       { word: 'notebook', emoji: '📓' },
       { word: 'nine', emoji: '9️⃣' },
-      { word: 'nail', emoji: '💅' },
+      { word: 'nurse', emoji: '👩‍⚕️' },
     ],
   },
   {
@@ -222,7 +223,6 @@ export const LETTERS: LetterInfo[] = [
       { word: 'vest', emoji: '🦺' },
       { word: 'volcano', emoji: '🌋' },
       { word: 'violin', emoji: '🎻' },
-      { word: 'volleyball', emoji: '🏐' },
     ],
   },
   {

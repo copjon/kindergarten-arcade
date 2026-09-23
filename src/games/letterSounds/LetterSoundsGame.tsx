@@ -8,7 +8,7 @@ import { PictureMatchMode } from './PictureMatchMode';
 type Mode = 'explore' | 'match';
 
 export function LetterSoundsGame({ onExit }: { onExit: () => void }) {
-  const [mode, setMode] = useState<Mode>('explore');
+  const [mode, setMode] = useState<Mode>('match');
   const speech = useSpeech();
 
   return (
