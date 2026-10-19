@@ -5,10 +5,13 @@ import { SpeechBubble } from '../../components/SpeechBubble';
 import { BlastBurst } from '../../components/BlastBurst';
 import { LaserShot } from '../../components/LaserShot';
 import type { useSpeech } from '../../hooks/useSpeech';
-import { SessionReport, type LetterResult } from './SessionReport';
+import { SessionReport, type ItemResult } from '../../components/SessionReport';
 import { saveSessionEntry } from '../../lib/history';
 import { SLOW_ANSWER_MS } from '../../lib/constants';
 import { playBlasterSound, playErrorSound } from '../../lib/sound';
+import { FIRST_TRY_POINTS, MAX_SPEED_BONUS, pointsFor, timeBonusFor } from '../../lib/scoring';
+import { shuffle } from '../../lib/random';
+import { describeLetter } from '../../lib/itemDisplay';
 
 const GAME_ID = 'letter-sounds';
 const GAME_TITLE = 'Alpha Blast';
@@ -34,26 +37,15 @@ interface Round {
   options: RoundOption[];
 }
 
-const FIRST_TRY_POINTS = 10;
-const RETRY_POINTS = 5;
 const PROMPTS: Record<RoundMode, string> = {
   pickPicture: 'Which picture starts with this letter?',
   pickLetter: 'Which letter does this picture start with?',
 };
 
-function shuffle<T>(arr: T[]): T[] {
-  return [...arr].sort(() => Math.random() - 0.5);
-}
+const now = () => Date.now();
 
 function newSessionOrder(): string[] {
   return shuffle(LETTERS).map((l) => l.letter);
-}
-
-function timeBonusFor(ms: number): number {
-  if (ms <= 3000) return 5;
-  if (ms <= 6000) return 3;
-  if (ms <= 10000) return 1;
-  return 0;
 }
 
 function buildRound(letter: string): Round {
@@ -75,7 +67,7 @@ export function PictureMatchMode({ speech }: Props) {
   const [index, setIndex] = useState(0);
   const [round, setRound] = useState(() => buildRound(sessionOrder[0]));
   const [score, setScore] = useState(0);
-  const [results, setResults] = useState<Record<string, LetterResult>>({});
+  const [results, setResults] = useState<Record<string, ItemResult>>({});
   const [missedThisRound, setMissedThisRound] = useState(false);
   const [message, setMessage] = useState(() => PROMPTS[round.mode]);
   const [busy, setBusy] = useState(false);
@@ -84,7 +76,7 @@ export function PictureMatchMode({ speech }: Props) {
   const [shotLetter, setShotLetter] = useState<string | null>(null);
   const [phase, setPhase] = useState<'playing' | 'report'>('playing');
   const [scoreBump, setScoreBump] = useState(false);
-  const roundStart = useRef(Date.now());
+  const roundStart = useRef(now());
   const savedRef = useRef(false);
 
   const hearLetter = useCallback(() => {
@@ -109,7 +101,7 @@ export function PictureMatchMode({ speech }: Props) {
     setShotLetter(null);
     setMessage(PROMPTS[firstRound.mode]);
     setPhase('playing');
-    roundStart.current = Date.now();
+    roundStart.current = now();
     savedRef.current = false;
   }
 
@@ -127,7 +119,7 @@ export function PictureMatchMode({ speech }: Props) {
     setRightLetter(null);
     setShotLetter(null);
     setMessage(PROMPTS[nextRound.mode]);
-    roundStart.current = Date.now();
+    roundStart.current = now();
   }
 
   async function choose(option: RoundOption) {
@@ -140,12 +132,12 @@ export function PictureMatchMode({ speech }: Props) {
       playBlasterSound();
       setScoreBump(false);
       requestAnimationFrame(() => setScoreBump(true));
-      const timeMs = Date.now() - roundStart.current;
+      const timeMs = now() - roundStart.current;
       const bonus = timeBonusFor(timeMs);
-      const points = (missedThisRound ? RETRY_POINTS : FIRST_TRY_POINTS) + bonus;
+      const points = pointsFor(missedThisRound, timeMs);
       setScore((s) => s + points);
       setResults((prev) => ({ ...prev, [option.letter]: { missedFirstTry: missedThisRound, timeMs, points } }));
-      setMessage(!missedThisRound && bonus >= 5 ? 'Lightning fast! ⚡' : pickRandom(CHEERS));
+      setMessage(!missedThisRound && bonus >= MAX_SPEED_BONUS ? 'Lightning fast! ⚡' : pickRandom(CHEERS));
       await speech.speak(`${option.letter.toUpperCase()} is for ${round.picture.word}`, { rate: 0.85, pitch: 1.2 });
       setTimeout(() => {
         setBusy(false);
@@ -177,9 +169,9 @@ export function PictureMatchMode({ speech }: Props) {
     saveSessionEntry({
       gameId: GAME_ID,
       gameTitle: GAME_TITLE,
-      timestamp: Date.now(),
+      timestamp: now(),
       score,
-      maxScore: sessionOrder.length * (FIRST_TRY_POINTS + 5),
+      maxScore: sessionOrder.length * (FIRST_TRY_POINTS + MAX_SPEED_BONUS),
       total: sessionOrder.length,
       gotFirstTry: entries.length - missedLetters.length,
       avgTimeMs,
@@ -192,9 +184,12 @@ export function PictureMatchMode({ speech }: Props) {
     return (
       <SessionReport
         score={score}
-        maxScore={sessionOrder.length * (FIRST_TRY_POINTS + 5)}
-        sessionOrder={sessionOrder}
+        maxScore={sessionOrder.length * (FIRST_TRY_POINTS + MAX_SPEED_BONUS)}
+        items={sessionOrder}
         results={results}
+        noun="letters"
+        perfectMessage="You know every letter sound, fast and confident. Amazing! 🎉"
+        describe={describeLetter}
         onPlayAgain={startNewSession}
       />
     );

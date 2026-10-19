@@ -6,6 +6,13 @@ A little React SPA of learning games for kindergartners, with an 8-bit arcade lo
 
 ## Games
 
+### Word Invaders
+
+*(high-frequency "heart words": I, a, the, and, me, to, an, is, am)*
+
+- **Invaders** — hear a word, then blast the alien ship carrying it before the fleet lands. A miss tells you what the word you hit actually says; after two misses the right ship glows as a hint. Each word comes up twice per session.
+- **Learn Words** — see each heart word with a picture and a sentence (word highlighted), and tap to hear it said, spelled out, or used in context. Heart words often can't be sounded out, so this mode is about learning them by heart.
+
 ### Alpha Blast
 
 *(letter recognition and phonics)*
@@ -17,7 +24,7 @@ A little React SPA of learning games for kindergartners, with an 8-bit arcade lo
 
 A dashboard (linked from the home screen) that stores every finished round in the browser's `localStorage` — no account or server needed. It shows:
 
-- An aggregate "letters to work on" list, weighted by how often a letter was missed or answered slowly across all past sessions.
+- "Words to work on" and "letters to work on" lists, weighted by how often each was missed or answered slowly across all past sessions.
 - Full game history with score, first-try accuracy, and average response time per session.
 
 ## Tech

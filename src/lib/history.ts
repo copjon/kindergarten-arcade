@@ -8,6 +8,7 @@ export interface SessionEntry {
   total: number;
   gotFirstTry: number;
   avgTimeMs: number;
+  // Practice items for any game (letters, words, ...); names kept for already-saved history.
   missedLetters: string[];
   slowLetters: string[];
 }
