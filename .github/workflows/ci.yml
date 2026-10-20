@@ -2,25 +2,57 @@ name: CI
 
 on:
   pull_request:
+  # Lets the audit job re-run CI on the commit it pushes; pushes made with
+  # GITHUB_TOKEN don't trigger workflows on their own.
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: ci-${{ github.event.pull_request.number }}
+  group: ci-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
   audit:
     name: npm audit
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write
     steps:
       - uses: actions/checkout@v7
+        with:
+          # The PR branch itself (not the merge commit), so fixes can be pushed.
+          ref: ${{ github.head_ref || github.ref_name }}
       - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: npm
-      # Fails on any known vulnerability; fix locally with `npm audit fix`.
+      - name: Apply non-breaking fixes
+        run: npm audit fix --package-lock-only
+      - name: Push fixes to the PR branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: ${{ github.head_ref || github.ref_name }}
+          FROM_FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
+        run: |
+          if git diff --quiet -- package.json package-lock.json; then
+            echo "No dependency fixes needed."
+            exit 0
+          fi
+          git diff --stat -- package.json package-lock.json
+          if [ "$FROM_FORK" = "true" ]; then
+            echo "::error::Vulnerable dependencies; run 'npm audit fix' and push the updated lockfile."
+            exit 1
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Fix vulnerable dependencies (npm audit fix)" -- package.json package-lock.json
+          git push origin "HEAD:$BRANCH"
+          gh workflow run ci.yml --ref "$BRANCH"
+          echo "::notice::Pushed dependency fixes; CI is re-running on the new commit."
+      # Fails if anything is left that needs a breaking upgrade (npm audit fix --force).
       - run: npm audit
 
   lint:
