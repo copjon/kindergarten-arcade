@@ -40,9 +40,23 @@ npm install
 npm run dev
 ```
 
+## Testing
+
+```bash
+npm test            # unit tests (Vitest + Testing Library)
+npm run test:e2e    # functional tests (Playwright) against a local production build
+```
+
+- **Unit tests** live next to the code (`src/**/*.test.ts(x)`) and cover scoring, round building, history storage, the report and parent dashboard, gameplay, and data guardrails (e.g. every picture word starts with its letter, and no emoji is reused across letters). They run as part of `npm run build`, so a failing test stops the build.
+- **Functional tests** live in `e2e/` and play the games in real desktop and mobile Chrome. Set `BASE_URL` to run them against a deployed site instead of a local build.
+
 ## Deployment
 
-Pushing to `main` builds the app and deploys it to GitHub Pages via the workflow in [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml).
+Pushing to `main` runs the workflow in [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml):
+
+1. **Build + unit tests:** lint, unit tests, then the production build. Any failure stops here and nothing is deployed.
+2. **Deploy** to GitHub Pages.
+3. **Functional tests:** waits until the live site serves the new commit (each build is stamped with its commit SHA), then runs the Playwright suite against it. On failure, the Playwright report is attached to the run.
 
 ## License
 

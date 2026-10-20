@@ -13,6 +13,12 @@ dist-ssr
 *.local
 run-dev.cmd
 
+# Test output
+playwright-report
+test-results
+blob-report
+playwright/.cache
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

@@ -10,34 +10,17 @@ import { saveSessionEntry } from '../../lib/history';
 import { SLOW_ANSWER_MS } from '../../lib/constants';
 import { playBlasterSound, playErrorSound } from '../../lib/sound';
 import { FIRST_TRY_POINTS, MAX_SPEED_BONUS, pointsFor, timeBonusFor } from '../../lib/scoring';
-import { shuffle } from '../../lib/random';
 import { describeWord } from '../../lib/itemDisplay';
+import { ALL_WORDS, buildOptions, buildOrder } from './rounds';
 
 type Speech = ReturnType<typeof useSpeech>;
 
 const GAME_ID = 'sight-words';
 const GAME_TITLE = 'Word Invaders';
-const APPEARANCES_PER_WORD = 2;
-const OPTION_COUNT = 4;
 const HINT_AFTER_MISSES = 2;
 const PROMPT = 'Blast the word you hear! 👂';
-const ALL_WORDS = SIGHT_WORDS.map((w) => w.word);
 
 const now = () => Date.now();
-
-function buildOrder(): string[] {
-  const pool = ALL_WORDS.flatMap((w) => Array<string>(APPEARANCES_PER_WORD).fill(w));
-  for (let attempt = 0; attempt < 100; attempt++) {
-    const order = shuffle(pool);
-    if (order.every((w, i) => i === 0 || w !== order[i - 1])) return order;
-  }
-  return shuffle(pool);
-}
-
-function buildOptions(target: string): string[] {
-  const others = shuffle(ALL_WORDS.filter((w) => w !== target)).slice(0, OPTION_COUNT - 1);
-  return shuffle([target, ...others]);
-}
 
 export function InvadersMode({ speech }: { speech: Speech }) {
   const { speak } = speech;

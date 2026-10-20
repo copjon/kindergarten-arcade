@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { LETTERS, randomPicture, type LetterInfo, type LetterPicture } from '../../data/letters';
 import { CHEERS, OOPS, pickRandom } from '../../data/phrases';
 import { SpeechBubble } from '../../components/SpeechBubble';
 import { BlastBurst } from '../../components/BlastBurst';
@@ -10,8 +9,8 @@ import { saveSessionEntry } from '../../lib/history';
 import { SLOW_ANSWER_MS } from '../../lib/constants';
 import { playBlasterSound, playErrorSound } from '../../lib/sound';
 import { FIRST_TRY_POINTS, MAX_SPEED_BONUS, pointsFor, timeBonusFor } from '../../lib/scoring';
-import { shuffle } from '../../lib/random';
 import { describeLetter } from '../../lib/itemDisplay';
+import { buildRound, newSessionOrder, type RoundMode, type RoundOption } from './rounds';
 
 const GAME_ID = 'letter-sounds';
 const GAME_TITLE = 'Alpha Blast';
@@ -22,45 +21,12 @@ interface Props {
   speech: Speech;
 }
 
-type RoundMode = 'pickPicture' | 'pickLetter';
-
-interface RoundOption {
-  letter: string;
-  word?: string;
-  emoji?: string;
-}
-
-interface Round {
-  mode: RoundMode;
-  target: LetterInfo;
-  picture: LetterPicture;
-  options: RoundOption[];
-}
-
 const PROMPTS: Record<RoundMode, string> = {
   pickPicture: 'Which picture starts with this letter?',
   pickLetter: 'Which letter does this picture start with?',
 };
 
 const now = () => Date.now();
-
-function newSessionOrder(): string[] {
-  return shuffle(LETTERS).map((l) => l.letter);
-}
-
-function buildRound(letter: string): Round {
-  const target = LETTERS.find((l) => l.letter === letter)!;
-  const picture = randomPicture(target);
-  const mode: RoundMode = Math.random() < 0.5 ? 'pickPicture' : 'pickLetter';
-  const distractorLetters = shuffle(LETTERS.filter((l) => l.letter !== letter)).slice(0, 3);
-
-  const options: RoundOption[] =
-    mode === 'pickPicture'
-      ? shuffle([{ letter: target.letter, ...picture }, ...distractorLetters.map((l) => ({ letter: l.letter, ...randomPicture(l) }))])
-      : shuffle([{ letter: target.letter }, ...distractorLetters.map((l) => ({ letter: l.letter }))]);
-
-  return { mode, target, picture, options };
-}
 
 export function PictureMatchMode({ speech }: Props) {
   const [sessionOrder, setSessionOrder] = useState(newSessionOrder);
