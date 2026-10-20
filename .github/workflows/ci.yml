@@ -11,6 +11,18 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  audit:
+    name: npm audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      # Fails on any known vulnerability; fix locally with `npm audit fix`.
+      - run: npm audit
+
   lint:
     name: Lint
     runs-on: ubuntu-latest
