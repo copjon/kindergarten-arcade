@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { describeItem, describeLetter, describeWord } from './itemDisplay';
+import { describeCvcWord, describeItem, describeLetter, describeWord } from './itemDisplay';
 
 describe('item display', () => {
   it('shows letters as upper+lower case with an uppercase tag', () => {
@@ -12,8 +12,13 @@ describe('item display', () => {
     expect(describeWord('I')).toMatchObject({ label: 'I', tag: 'I' });
   });
 
+  it('shows sounding-out words with their picture', () => {
+    expect(describeCvcWord('cat')).toMatchObject({ icon: '🐈', label: 'cat', tag: 'cat' });
+  });
+
   it('picks the display style from the game id', () => {
     expect(describeItem('sight-words', 'and').label).toBe('and');
+    expect(describeItem('sound-blaster', 'dog').label).toBe('dog');
     expect(describeItem('letter-sounds', 'a').label).toBe('Aa');
   });
 });

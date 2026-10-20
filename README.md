@@ -13,6 +13,13 @@ A little React SPA of learning games for kindergartners, with an 8-bit arcade lo
 - **Invaders** — hear a word, then blast the alien ship carrying it before the fleet lands. A miss tells you what the word you hit actually says; after two misses the right ship glows as a hint. Each word comes up twice per session.
 - **Learn Words** — see each heart word with a picture and a sentence (word highlighted), and tap to hear it said, spelled out, or used in context. Heart words often can't be sounded out, so this mode is about learning them by heart.
 
+### Sound Blaster
+
+*(sounding out and blending short-vowel words like cat, dog, and sun)*
+
+- **Blast** — a word appears as letter blocks. Tap them left to right to hear each sound, then blend the sounds and blast the matching picture. One wrong picture always shares letters with the word (cat vs. hat), so the whole word has to be sounded out. "Blend it" says the sounds slowly, then faster; a miss says what that picture is, and after two misses the right one glows. Ten words per session.
+- **Sound Lab** — pick any word, tap its letters to hear their sounds, and hear it sounded out and blended.
+
 ### Alpha Blast
 
 *(letter recognition and phonics)*
@@ -24,7 +31,7 @@ A little React SPA of learning games for kindergartners, with an 8-bit arcade lo
 
 A dashboard (linked from the home screen) that stores every finished round in the browser's `localStorage` — no account or server needed. It shows:
 
-- "Words to work on" and "letters to work on" lists, weighted by how often each was missed or answered slowly across all past sessions.
+- "Words to work on", "sounding-out words to work on", and "letters to work on" lists, weighted by how often each was missed or answered slowly across all past sessions.
 - Full game history with score, first-try accuracy, and average response time per session.
 
 ## Tech
@@ -49,6 +56,10 @@ npm run test:e2e    # functional tests (Playwright) against a local production b
 
 - **Unit tests** live next to the code (`src/**/*.test.ts(x)`) and cover scoring, round building, history storage, the report and parent dashboard, gameplay, and data guardrails (e.g. every picture word starts with its letter, and no emoji is reused across letters). They run as part of `npm run build`, so a failing test stops the build.
 - **Functional tests** live in `e2e/` and play the games in real desktop and mobile Chrome. Set `BASE_URL` to run them against a deployed site instead of a local build.
+
+## Pull requests
+
+Every pull request runs [`.github/workflows/ci.yml`](.github/workflows/ci.yml): npm audit (applying any non-breaking `npm audit fix` to the PR branch), lint, unit tests plus the build, and the functional tests against a local build.
 
 ## Deployment
 

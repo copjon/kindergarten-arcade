@@ -1,5 +1,6 @@
 import type { GameMeta } from '../types/game';
 import { LetterSoundsGame } from './letterSounds/LetterSoundsGame';
+import { SoundBlasterGame } from './soundBlaster/SoundBlasterGame';
 import { WordInvadersGame } from './wordInvaders/WordInvadersGame';
 
 export const GAMES: GameMeta[] = [
@@ -10,6 +11,14 @@ export const GAMES: GameMeta[] = [
     emoji: '👾',
     color: '#8B3CFF',
     Component: WordInvadersGame,
+  },
+  {
+    id: 'sound-blaster',
+    title: 'Sound Blaster',
+    tagline: 'Sound out each letter, blend the word, blast the picture!',
+    emoji: '🔊',
+    color: '#00A8C7',
+    Component: SoundBlasterGame,
   },
   {
     id: 'letter-sounds',

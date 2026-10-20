@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Andika:wght@700&family=Press+Start+2P&family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@500;600;700&display=swap');
 
 :root {
   --coral: #ff2d6d;
@@ -1252,4 +1252,60 @@ button {
 
 .word-grid .letter-tile {
   font-size: 1.5rem;
+}
+
+/* ---------- Sound Blaster ---------- */
+.sound-tiles {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.sound-tile {
+  /* Andika is made for beginning readers: a tailed "l" that can't pass for "I". */
+  font-family: 'Andika', 'Baloo 2', sans-serif;
+  font-weight: 700;
+  font-size: clamp(2.6rem, 13vw, 3.6rem);
+  line-height: 1;
+  width: clamp(72px, 22vw, 96px);
+  aspect-ratio: 1;
+  border: 3px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg-bottom);
+  color: var(--ink-soft);
+  cursor: pointer;
+  box-shadow: 0 5px 0 var(--line);
+  transition: transform 0.1s ease, background 0.2s ease;
+}
+
+.sound-tile:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.sound-tile:not(:disabled):active {
+  transform: translateY(3px);
+}
+
+.sound-tile.next {
+  border-color: var(--gold);
+  color: var(--ink);
+  animation: hint-glow 0.9s ease-in-out infinite;
+}
+
+.sound-tile.lit {
+  background: var(--teal);
+  border-color: var(--teal-deep);
+  color: #fff;
+  box-shadow: 0 5px 0 var(--teal-deep), 0 0 16px rgba(0, 229, 255, 0.6);
+  animation: pop 0.3s ease;
+}
+
+.blast-options {
+  grid-template-columns: repeat(3, minmax(80px, 1fr));
+  max-width: 420px;
+}
+
+.opt.hint {
+  animation: hint-glow 0.9s ease-in-out infinite;
 }

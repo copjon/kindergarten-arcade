@@ -43,6 +43,7 @@ test('home screen lists the games and the parent dashboard', async ({ page }) =>
   await expect(page).toHaveTitle('Kindergarten Arcade');
   await expect(page.getByRole('heading', { level: 1 })).toContainText(/Kindergarten\s*Arcade/i);
   await expect(page.getByText('Word Invaders', { exact: true })).toBeVisible();
+  await expect(page.getByText('Sound Blaster', { exact: true })).toBeVisible();
   await expect(page.getByText('Alpha Blast', { exact: true })).toBeVisible();
   await expect(page.getByRole('button', { name: /For Parents/ })).toBeVisible();
 });
@@ -68,6 +69,33 @@ test.describe('Word Invaders', () => {
     await expect(page.locator('.learn-word')).toHaveText('the');
     await expect(page.locator('.learn-sentence mark')).toHaveText('the');
     await expect(page.getByRole('button', { name: /Spell it/ })).toBeVisible();
+  });
+});
+
+test.describe('Sound Blaster', () => {
+  test('sounding out the letters and blasting the picture scores and advances', async ({ page }) => {
+    await openGame(page, 'Sound Blaster');
+    await expect(page.getByText('Word 1 of 10')).toBeVisible();
+
+    const tiles = page.locator('.sound-tile');
+    await expect(tiles).toHaveCount(3);
+    for (let i = 0; i < 3; i++) await tiles.nth(i).click();
+    await expect(page.locator('.sound-tile.lit')).toHaveCount(3);
+
+    const pictures = page.locator('.opt');
+    await expect(pictures).toHaveCount(3);
+    await hitByElimination(pictures, '.opt.right');
+
+    await expect(page.locator('.quiz-score')).not.toHaveText('⭐ 0 pts');
+    await expect(page.getByText('Word 2 of 10')).toBeVisible({ timeout: 15_000 });
+  });
+
+  test('Sound Lab shows a word as tappable letters', async ({ page }) => {
+    await openGame(page, 'Sound Blaster');
+    await page.getByRole('button', { name: /Sound Lab/ }).click();
+    await page.getByRole('button', { name: 'Word fox', exact: true }).click();
+    await expect(page.locator('.sound-tile')).toHaveText(['f', 'o', 'x']);
+    await expect(page.getByRole('button', { name: /Sound it out/ })).toBeVisible();
   });
 });
 
@@ -109,12 +137,17 @@ test('parent dashboard shows saved practice history per game', async ({ page }) 
     });
     localStorage.setItem(
       'phonics.history.v1',
-      JSON.stringify([entry('sight-words', 'Word Invaders', ['the']), entry('letter-sounds', 'Alpha Blast', ['q'])]),
+      JSON.stringify([
+        entry('sight-words', 'Word Invaders', ['the']),
+        entry('sound-blaster', 'Sound Blaster', ['pig']),
+        entry('letter-sounds', 'Alpha Blast', ['q']),
+      ]),
     );
   });
   await page.goto('./');
   await page.getByRole('button', { name: /For Parents/ }).click();
-  await expect(page.getByRole('heading', { name: 'Words to work on' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Words to work on', exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Sounding-out words to work on' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Letters to work on' })).toBeVisible();
-  await expect(page.locator('.history-row')).toHaveCount(2);
+  await expect(page.locator('.history-row')).toHaveCount(3);
 });
