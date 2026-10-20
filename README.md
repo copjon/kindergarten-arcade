@@ -10,7 +10,7 @@ A little React SPA of learning games for kindergartners, with an 8-bit arcade lo
 
 *(high-frequency "heart words": I, a, the, and, me, to, an, is, am)*
 
-- **Invaders** — hear a word, then blast the alien ship carrying it before the fleet lands. A miss tells you what the word you hit actually says; after two misses the right ship glows as a hint. Each word comes up twice per session.
+- **Invaders** — hear a word (said, used in a sentence, then said again), then blast the alien ship carrying it before the fleet lands. A miss tells you what the word you hit actually says; after two misses the right ship glows as a hint. Each word comes up twice per session.
 - **Learn Words** — see each heart word with a picture and a sentence (word highlighted), and tap to hear it said, spelled out, or used in context. Heart words often can't be sounded out, so this mode is about learning them by heart.
 
 ### Sound Blaster
@@ -38,7 +38,7 @@ A dashboard (linked from the home screen) that stores every finished round in th
 
 - React + TypeScript, scaffolded with Vite
 - No backend — all state (including history) lives in the browser
-- Speech via the Web Speech API (`speechSynthesis`)
+- Speech via the Web Speech API (`speechSynthesis`), using the device's own voices. Novelty and robotic voices (e.g. Apple's Bubbles, Zarvox, Fred, Grandma) are hidden because they're hard for kids to understand.
 
 ## Running locally
 

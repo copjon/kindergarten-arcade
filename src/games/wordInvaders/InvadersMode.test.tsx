@@ -3,13 +3,15 @@ import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { InvadersMode } from './InvadersMode';
 import { fakeSpeech } from '../../test/fakeSpeech';
+import { SIGHT_WORDS } from '../../data/sightWords';
+import { callOut } from './rounds';
 
 async function startGame() {
   const { speech, speak } = fakeSpeech();
   render(<InvadersMode speech={speech} />);
-  // The round starts by speaking the target word on its own.
+  // The round starts by calling out the target word: "the. Pet the dog. the."
   await waitFor(() => expect(speak).toHaveBeenCalled());
-  const target = speak.mock.calls[0][0];
+  const target = speak.mock.calls[0][0].split('.')[0];
   const invaders = screen.getAllByRole('button', { name: /^word / });
   const wrong = invaders.filter((b) => b.textContent?.replace('👾', '') !== target);
   const right = invaders.find((b) => b.textContent?.replace('👾', '') === target)!;
@@ -22,6 +24,12 @@ describe('Word Invaders gameplay', () => {
     expect(screen.getByText('Wave 1 of 18')).toBeInTheDocument();
     expect(invaders).toHaveLength(4);
     expect(right).toBeDefined();
+  });
+
+  it('calls out the word, a sentence with it, then the word again', async () => {
+    const { speak, target } = await startGame();
+    const { sentence } = SIGHT_WORDS.find((w) => w.word === target)!;
+    expect(speak.mock.calls[0][0]).toBe(callOut(target, sentence));
   });
 
   it('a wrong hit says what that word actually is and scores nothing', async () => {

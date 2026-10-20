@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ALL_WORDS, APPEARANCES_PER_WORD, OPTION_COUNT, buildOptions, buildOrder } from './rounds';
+import { ALL_WORDS, APPEARANCES_PER_WORD, OPTION_COUNT, buildOptions, buildOrder, callOut } from './rounds';
 
 describe('Word Invaders rounds', () => {
   it('repeats every word the same number of times per session', () => {
@@ -28,5 +28,9 @@ describe('Word Invaders rounds', () => {
       expect(new Set(options).size).toBe(OPTION_COUNT);
       expect(options.filter((w) => w === target)).toHaveLength(1);
     }
+  });
+
+  it('calls out word, sentence, word', () => {
+    expect(callOut('the', 'Pet the dog.')).toBe('the. Pet the dog. the.');
   });
 });

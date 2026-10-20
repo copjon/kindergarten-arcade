@@ -19,3 +19,8 @@ export function buildOptions(target: string, words: string[] = ALL_WORDS): strin
   const others = shuffle(words.filter((w) => w !== target)).slice(0, OPTION_COUNT - 1);
   return shuffle([target, ...others]);
 }
+
+/** What each wave says: the word, the word in a sentence, the word again ("the. Pet the dog. the."). */
+export function callOut(word: string, sentence: string): string {
+  return `${word}. ${sentence} ${word}.`;
+}

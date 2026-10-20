@@ -11,7 +11,7 @@ import { SLOW_ANSWER_MS } from '../../lib/constants';
 import { playBlasterSound, playErrorSound } from '../../lib/sound';
 import { FIRST_TRY_POINTS, MAX_SPEED_BONUS, pointsFor, timeBonusFor } from '../../lib/scoring';
 import { describeWord } from '../../lib/itemDisplay';
-import { ALL_WORDS, buildOptions, buildOrder } from './rounds';
+import { ALL_WORDS, buildOptions, buildOrder, callOut } from './rounds';
 
 type Speech = ReturnType<typeof useSpeech>;
 
@@ -44,11 +44,13 @@ export function InvadersMode({ speech }: { speech: Speech }) {
   const target = order[index];
   const targetInfo = SIGHT_WORDS.find((w) => w.word === target)!;
 
+  // Each wave calls out the word, uses it in a sentence, then says it again.
+  const sentence = targetInfo.sentence;
   useEffect(() => {
     if (phase !== 'playing') return;
-    const id = setTimeout(() => speak(target, { rate: 0.8, pitch: 1.1 }), 400);
+    const id = setTimeout(() => speak(callOut(target, sentence), { rate: 0.8, pitch: 1.1 }), 400);
     return () => clearTimeout(id);
-  }, [speak, target, index, wave, phase]);
+  }, [speak, target, sentence, index, wave, phase]);
 
   function resetRoundState() {
     setWave(0);
