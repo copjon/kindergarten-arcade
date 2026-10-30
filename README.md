@@ -18,7 +18,7 @@ A little React SPA of learning games for kindergartners, with an 8-bit arcade lo
 *(letter recognition and phonics)*
 
 - **Explore Letters** — browse the alphabet, hear each letter's name and sound, and see a picture for a word that starts with it. Tap the picture for another example — every letter has several so it doesn't turn into rote memorization.
-- **Picture Match** — hear/see a letter and tap the picture whose word starts with it. Runs through all 26 letters, scores points (with a speed bonus for quick, correct first tries), and ends with a report of which letters need more practice — flagged either because they were missed or because they took a while to answer.
+- **Picture Match** — hear/see a letter and tap the picture whose word starts with it. Prompts with the letter and its sound, and never offers two pictures that start with the same sound (e.g. cat and kite). Runs through every letter except X (no common word starts with its /ks/ sound), scores points (with a speed bonus for quick, correct first tries only), and ends with a report of which letters need more practice — flagged either because they were missed or because they took a while to answer.
 
 ### For Parents
 

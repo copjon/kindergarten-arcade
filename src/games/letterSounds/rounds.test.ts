@@ -1,14 +1,32 @@
 import { describe, expect, it } from 'vitest';
-import { LETTERS } from '../../data/letters';
-import { OPTION_COUNT, buildRound, newSessionOrder } from './rounds';
+import { LETTERS, soundsAlike } from '../../data/letters';
+import { OPTION_COUNT, QUIZ_LETTERS, buildRound, newSessionOrder } from './rounds';
 
 describe('Alpha Blast rounds', () => {
-  it('runs through every letter exactly once per session', () => {
-    expect([...newSessionOrder()].sort()).toEqual(LETTERS.map((l) => l.letter));
+  it('runs through every quizzable letter exactly once per session', () => {
+    expect([...newSessionOrder()].sort()).toEqual(QUIZ_LETTERS.map((l) => l.letter));
+  });
+
+  it('leaves out x, whose pictures start with its name rather than its sound', () => {
+    expect(newSessionOrder()).not.toContain('x');
+    expect(QUIZ_LETTERS).toHaveLength(LETTERS.length - 1);
+  });
+
+  it('never offers a distractor that starts with the same sound as the target', () => {
+    for (const target of QUIZ_LETTERS) {
+      for (let run = 0; run < 20; run++) {
+        for (const o of buildRound(target.letter).options) {
+          if (o.letter === target.letter) continue;
+          const other = LETTERS.find((l) => l.letter === o.letter)!;
+          expect(soundsAlike(other, target), `${o.letter} offered for ${target.letter}`).toBe(false);
+          expect(other.quizzable, o.letter).not.toBe(false);
+        }
+      }
+    }
   });
 
   it.each(['pickPicture', 'pickLetter'] as const)('%s rounds have one correct answer among distinct options', (mode) => {
-    for (const { letter } of LETTERS) {
+    for (const { letter } of QUIZ_LETTERS) {
       const round = buildRound(letter, mode);
       expect(round.mode).toBe(mode);
       expect(round.options).toHaveLength(OPTION_COUNT);

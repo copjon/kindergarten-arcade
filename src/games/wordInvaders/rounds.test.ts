@@ -21,6 +21,15 @@ describe('Word Invaders rounds', () => {
     }
   });
 
+  it('picks look-alike distractors so length alone does not give the answer away', () => {
+    for (let run = 0; run < 25; run++) {
+      expect(buildOptions('a').sort()).toEqual(['I', 'a', 'am', 'an'].sort());
+      const forThe = buildOptions('the');
+      expect(forThe).toContain('and');
+      expect(forThe).toContain('to');
+    }
+  });
+
   it('always offers the target once among distinct options', () => {
     for (const target of ALL_WORDS) {
       const options = buildOptions(target);

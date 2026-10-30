@@ -7,11 +7,17 @@ export interface LetterInfo {
   letter: string;
   sound: string;
   pictures: LetterPicture[];
+  /** False when no picture word starts with this letter's sound, so it can't be asked fairly in Picture Match. */
+  quizzable?: false;
 }
 
 // Picture words are chosen to avoid common synonyms that start with a
 // different letter (e.g. a soccer ball ⚽ reads as "soccer" as easily as
 // "ball", so B uses a baseball ⚾ instead — same letter either way).
+//
+// Every picture word must also *start with the letter's sound*, not just its
+// spelling: vowels teach the short sound, so no ice cream for "ih" or eight
+// for "eh".
 export const LETTERS: LetterInfo[] = [
   {
     letter: 'a',
@@ -59,8 +65,8 @@ export const LETTERS: LetterInfo[] = [
     pictures: [
       { word: 'egg', emoji: '🥚' },
       { word: 'elephant', emoji: '🐘' },
-      { word: 'ear', emoji: '👂' },
-      { word: 'eight', emoji: '8️⃣' },
+      { word: 'elf', emoji: '🧝' },
+      { word: 'elevator', emoji: '🛗' },
     ],
   },
   {
@@ -97,8 +103,8 @@ export const LETTERS: LetterInfo[] = [
     letter: 'i',
     sound: 'ih',
     pictures: [
-      { word: 'ice cream', emoji: '🍦' },
-      { word: 'ice', emoji: '🧊' },
+      { word: 'iguana', emoji: '🦎' },
+      { word: 'inchworm', emoji: '🐛' },
     ],
   },
   {
@@ -155,9 +161,9 @@ export const LETTERS: LetterInfo[] = [
     sound: 'aw',
     pictures: [
       { word: 'octopus', emoji: '🐙' },
-      { word: 'orange', emoji: '🍊' },
-      { word: 'owl', emoji: '🦉' },
-      { word: 'onion', emoji: '🧅' },
+      { word: 'otter', emoji: '🦦' },
+      { word: 'olive', emoji: '🫒' },
+      { word: 'ox', emoji: '🐂' },
     ],
   },
   {
@@ -213,7 +219,7 @@ export const LETTERS: LetterInfo[] = [
     sound: 'uh',
     pictures: [
       { word: 'umbrella', emoji: '☂️' },
-      { word: 'unicorn', emoji: '🦄' },
+      { word: 'upside down', emoji: '🙃' },
     ],
   },
   {
@@ -238,7 +244,9 @@ export const LETTERS: LetterInfo[] = [
   {
     letter: 'x',
     sound: 'ks',
+    // X-ray starts with the letter name "ex"; almost no word starts with /ks/.
     pictures: [{ word: 'x-ray', emoji: '🩻' }],
+    quizzable: false,
   },
   {
     letter: 'y',
@@ -258,6 +266,11 @@ export const LETTERS: LetterInfo[] = [
     ],
   },
 ];
+
+/** Letters whose sounds open the same way (c/k/q/x all start with /k/; a "ah" and o "aw"), judged by the sound's first character. */
+export function soundsAlike(a: LetterInfo, b: LetterInfo): boolean {
+  return a.sound[0] === b.sound[0];
+}
 
 export function randomPicture(letter: LetterInfo, avoid?: LetterPicture): LetterPicture {
   const pool = avoid && letter.pictures.length > 1 ? letter.pictures.filter((p) => p.word !== avoid.word) : letter.pictures;

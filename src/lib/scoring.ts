@@ -9,6 +9,7 @@ export function timeBonusFor(ms: number): number {
   return 0;
 }
 
+// The speed bonus only counts on a first try, so tapping fast and fixing it after never pays.
 export function pointsFor(missedFirstTry: boolean, ms: number): number {
-  return (missedFirstTry ? RETRY_POINTS : FIRST_TRY_POINTS) + timeBonusFor(ms);
+  return missedFirstTry ? RETRY_POINTS : FIRST_TRY_POINTS + timeBonusFor(ms);
 }

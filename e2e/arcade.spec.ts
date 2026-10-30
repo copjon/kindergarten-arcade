@@ -74,14 +74,14 @@ test.describe('Word Invaders', () => {
 test.describe('Alpha Blast', () => {
   test('a correct match scores and moves to the next letter', async ({ page }) => {
     await openGame(page, 'Alpha Blast');
-    await expect(page.getByText('Letter 1 of 26')).toBeVisible();
+    await expect(page.getByText('Letter 1 of 25')).toBeVisible();
 
     const options = page.locator('.opt');
     await expect(options).toHaveCount(4);
     await hitByElimination(options, '.opt.right');
 
     await expect(page.locator('.quiz-score')).not.toHaveText('⭐ 0 pts');
-    await expect(page.getByText('Letter 2 of 26')).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByText('Letter 2 of 25')).toBeVisible({ timeout: 15_000 });
   });
 
   test('Explore Letters lets you browse the alphabet', async ({ page }) => {

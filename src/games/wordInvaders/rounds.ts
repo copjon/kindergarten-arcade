@@ -15,7 +15,16 @@ export function buildOrder(words: string[] = ALL_WORDS): string[] {
   return shuffle(pool);
 }
 
+/** Lower is more confusable: similar length, and a shared first letter (a / an / am / and). */
+function confusability(target: string, other: string): number {
+  const sameStart = target[0].toLowerCase() === other[0].toLowerCase() ? 1 : 0;
+  return Math.abs(target.length - other.length) - sameStart;
+}
+
+/** Distractors look like the target, so the right ship can't be spotted by length or first letter alone. */
 export function buildOptions(target: string, words: string[] = ALL_WORDS): string[] {
-  const others = shuffle(words.filter((w) => w !== target)).slice(0, OPTION_COUNT - 1);
+  const others = shuffle(words.filter((w) => w !== target))
+    .sort((a, b) => confusability(target, a) - confusability(target, b))
+    .slice(0, OPTION_COUNT - 1);
   return shuffle([target, ...others]);
 }

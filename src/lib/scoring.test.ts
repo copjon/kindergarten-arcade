@@ -21,9 +21,13 @@ describe('pointsFor', () => {
     expect(pointsFor(false, 1000)).toBe(FIRST_TRY_POINTS + MAX_SPEED_BONUS);
   });
 
-  it('gives retry points after a miss, still with any speed bonus', () => {
-    expect(pointsFor(true, 1000)).toBe(RETRY_POINTS + MAX_SPEED_BONUS);
+  it('gives flat retry points after a miss, with no speed bonus', () => {
+    expect(pointsFor(true, 1000)).toBe(RETRY_POINTS);
     expect(pointsFor(true, 20000)).toBe(RETRY_POINTS);
+  });
+
+  it('never lets a fast guess-and-retry match a slow first try', () => {
+    expect(pointsFor(true, 500)).toBeLessThan(pointsFor(false, 60000));
   });
 
   it('always rewards a correct answer more on the first try than after a miss', () => {

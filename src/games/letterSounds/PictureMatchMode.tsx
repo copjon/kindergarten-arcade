@@ -45,8 +45,9 @@ export function PictureMatchMode({ speech }: Props) {
   const roundStart = useRef(now());
   const savedRef = useRef(false);
 
+  // Say the sound too: some letter names start with a different sound (W "double-you", Y "why", H "aitch").
   const hearLetter = useCallback(() => {
-    speech.speak(round.target.letter.toUpperCase(), { rate: 0.8, pitch: 1.2 });
+    speech.speak(`${round.target.letter.toUpperCase()} says ${round.target.sound}`, { rate: 0.8, pitch: 1.2 });
   }, [speech, round.target]);
 
   const hearPicture = useCallback(() => {

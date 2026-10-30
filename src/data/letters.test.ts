@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { LETTERS, randomPicture } from './letters';
+import { LETTERS, randomPicture, soundsAlike } from './letters';
 
 const allPictures = LETTERS.flatMap((l) => l.pictures.map((p) => ({ ...p, letter: l.letter })));
 
@@ -27,6 +27,18 @@ describe('letter data', () => {
     const words = allPictures.map((p) => p.word);
     expect(new Set(emoji).size).toBe(emoji.length);
     expect(new Set(words).size).toBe(words.length);
+  });
+});
+
+describe('soundsAlike', () => {
+  const byLetter = (c: string) => LETTERS.find((l) => l.letter === c)!;
+
+  it('groups the letters that open with a /k/ sound', () => {
+    for (const [a, b] of [['c', 'k'], ['c', 'q'], ['k', 'x']]) expect(soundsAlike(byLetter(a), byLetter(b))).toBe(true);
+  });
+
+  it('keeps clearly different sounds apart', () => {
+    for (const [a, b] of [['b', 'd'], ['m', 'n'], ['e', 'i']]) expect(soundsAlike(byLetter(a), byLetter(b))).toBe(false);
   });
 });
 
