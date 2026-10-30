@@ -19,7 +19,7 @@ async function startGame() {
 describe('Word Invaders gameplay', () => {
   it('starts on wave 1 with four invaders including the spoken word', async () => {
     const { invaders, right } = await startGame();
-    expect(screen.getByText('Wave 1 of 18')).toBeInTheDocument();
+    expect(screen.getByText('Wave 1 of 12')).toBeInTheDocument();
     expect(invaders).toHaveLength(4);
     expect(right).toBeDefined();
   });
@@ -46,7 +46,7 @@ describe('Word Invaders gameplay', () => {
     await userEvent.click(right);
     expect(right).toHaveClass('hit');
     expect(screen.queryByText('⭐ 0 pts')).not.toBeInTheDocument();
-    await waitFor(() => expect(screen.getByText('Wave 2 of 18')).toBeInTheDocument(), { timeout: 2000 });
-    expect(within(screen.getByText('Wave 2 of 18').parentElement!).getByText(/pts/)).toBeInTheDocument();
+    await waitFor(() => expect(screen.getByText('Wave 2 of 12')).toBeInTheDocument(), { timeout: 2000 });
+    expect(within(screen.getByText('Wave 2 of 12').parentElement!).getByText(/pts/)).toBeInTheDocument();
   });
 });

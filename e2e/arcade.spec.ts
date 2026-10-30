@@ -50,7 +50,7 @@ test('home screen lists the games and the parent dashboard', async ({ page }) =>
 test.describe('Word Invaders', () => {
   test('blasting the spoken word scores and advances the wave', async ({ page }) => {
     await openGame(page, 'Word Invaders');
-    await expect(page.getByText('Wave 1 of 18')).toBeVisible();
+    await expect(page.getByText('Wave 1 of 12')).toBeVisible();
 
     const invaders = page.locator('.invader');
     await expect(invaders).toHaveCount(4);
@@ -58,7 +58,7 @@ test.describe('Word Invaders', () => {
     const misses = await hitByElimination(invaders, '.invader.hit');
     if (misses > 0) await expect(page.locator('.bubble')).not.toHaveText('Blast the word you hear! 👂');
     await expect(page.locator('.quiz-score')).not.toHaveText('⭐ 0 pts');
-    await expect(page.getByText('Wave 2 of 18')).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByText('Wave 2 of 12')).toBeVisible({ timeout: 10_000 });
   });
 
   test('Learn Words shows the word in a highlighted sentence', async ({ page }) => {
@@ -74,14 +74,14 @@ test.describe('Word Invaders', () => {
 test.describe('Alpha Blast', () => {
   test('a correct match scores and moves to the next letter', async ({ page }) => {
     await openGame(page, 'Alpha Blast');
-    await expect(page.getByText('Letter 1 of 25')).toBeVisible();
+    await expect(page.getByText('Letter 1 of 10')).toBeVisible();
 
     const options = page.locator('.opt');
     await expect(options).toHaveCount(4);
     await hitByElimination(options, '.opt.right');
 
     await expect(page.locator('.quiz-score')).not.toHaveText('⭐ 0 pts');
-    await expect(page.getByText('Letter 2 of 25')).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByText('Letter 2 of 10')).toBeVisible({ timeout: 15_000 });
   });
 
   test('Explore Letters lets you browse the alphabet', async ({ page }) => {
@@ -89,6 +89,11 @@ test.describe('Alpha Blast', () => {
     await page.getByRole('button', { name: /Explore Letters/ }).click();
     await page.getByRole('button', { name: 'Letter m', exact: true }).click();
     await expect(page.locator('.spotlight-letter')).toHaveText('Mm');
+    await expect(page.locator('.spotlight-hint')).toHaveCount(0);
+
+    await page.getByRole('button', { name: 'Letter x', exact: true }).click();
+    await expect(page.locator('.spotlight-word')).toHaveText(/fox|box|six/);
+    await expect(page.locator('.spotlight-hint')).toHaveText('X is at the end!');
   });
 });
 

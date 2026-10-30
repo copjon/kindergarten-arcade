@@ -1,15 +1,26 @@
 import { describe, expect, it } from 'vitest';
 import { LETTERS, soundsAlike } from '../../data/letters';
-import { OPTION_COUNT, QUIZ_LETTERS, buildRound, newSessionOrder } from './rounds';
+import type { SessionEntry } from '../../lib/history';
+import { OPTION_COUNT, QUIZ_LETTERS, SESSION_LETTERS, buildRound, newSessionOrder } from './rounds';
 
 describe('Alpha Blast rounds', () => {
-  it('runs through every quizzable letter exactly once per session', () => {
-    expect([...newSessionOrder()].sort()).toEqual(QUIZ_LETTERS.map((l) => l.letter));
+  it('asks a short session of distinct quizzable letters', () => {
+    const order = newSessionOrder();
+    expect(order).toHaveLength(SESSION_LETTERS);
+    expect(new Set(order).size).toBe(SESSION_LETTERS);
+    for (const letter of order) expect(QUIZ_LETTERS.map((l) => l.letter)).toContain(letter);
   });
 
-  it('leaves out x, whose pictures start with its name rather than its sound', () => {
-    expect(newSessionOrder()).not.toContain('x');
+  it('leaves out x, which is taught by its ending sound', () => {
+    expect(QUIZ_LETTERS.map((l) => l.letter)).not.toContain('x');
     expect(QUIZ_LETTERS).toHaveLength(LETTERS.length - 1);
+  });
+
+  it('brings back recently missed letters', () => {
+    const history = [{ gameId: 'letter-sounds', missedLetters: ['q'], slowLetters: [], items: ['q'] } as unknown as SessionEntry];
+    let included = 0;
+    for (let run = 0; run < 100; run++) if (newSessionOrder(history).includes('q')) included++;
+    expect(included).toBeGreaterThan(70);
   });
 
   it('never offers a distractor that starts with the same sound as the target', () => {
@@ -19,7 +30,7 @@ describe('Alpha Blast rounds', () => {
           if (o.letter === target.letter) continue;
           const other = LETTERS.find((l) => l.letter === o.letter)!;
           expect(soundsAlike(other, target), `${o.letter} offered for ${target.letter}`).toBe(false);
-          expect(other.quizzable, o.letter).not.toBe(false);
+          expect(other.soundAt, o.letter).not.toBe('end');
         }
       }
     }

@@ -6,16 +6,15 @@ import { BlastBurst } from '../../components/BlastBurst';
 import { LaserShot } from '../../components/LaserShot';
 import { SessionReport, type ItemResult } from '../../components/SessionReport';
 import type { useSpeech } from '../../hooks/useSpeech';
-import { saveSessionEntry } from '../../lib/history';
+import { loadHistory, saveSessionEntry } from '../../lib/history';
 import { SLOW_ANSWER_MS } from '../../lib/constants';
 import { playBlasterSound, playErrorSound } from '../../lib/sound';
 import { FIRST_TRY_POINTS, MAX_SPEED_BONUS, pointsFor, timeBonusFor } from '../../lib/scoring';
 import { describeWord } from '../../lib/itemDisplay';
-import { ALL_WORDS, buildOptions, buildOrder } from './rounds';
+import { GAME_ID, buildOptions, buildOrder, pickSessionWords } from './rounds';
 
 type Speech = ReturnType<typeof useSpeech>;
 
-const GAME_ID = 'sight-words';
 const GAME_TITLE = 'Word Invaders';
 const HINT_AFTER_MISSES = 2;
 const PROMPT = 'Blast the word you hear! 👂';
@@ -24,7 +23,8 @@ const now = () => Date.now();
 
 export function InvadersMode({ speech }: { speech: Speech }) {
   const { speak } = speech;
-  const [order, setOrder] = useState(buildOrder);
+  const [words, setWords] = useState(() => pickSessionWords(loadHistory()));
+  const [order, setOrder] = useState(() => buildOrder(words));
   const [index, setIndex] = useState(0);
   const [options, setOptions] = useState(() => buildOptions(order[0]));
   const [wave, setWave] = useState(0);
@@ -61,7 +61,9 @@ export function InvadersMode({ speech }: { speech: Speech }) {
   }
 
   function startNewSession() {
-    const nextOrder = buildOrder();
+    const nextWords = pickSessionWords(loadHistory());
+    const nextOrder = buildOrder(nextWords);
+    setWords(nextWords);
     setOrder(nextOrder);
     setIndex(0);
     setOptions(buildOptions(nextOrder[0]));
@@ -138,7 +140,7 @@ export function InvadersMode({ speech }: { speech: Speech }) {
     if (phase !== 'report' || savedRef.current) return;
     savedRef.current = true;
 
-    const entries = ALL_WORDS.map((word) => ({ word, result: results[word] })).filter((e) => e.result);
+    const entries = words.map((word) => ({ word, result: results[word] })).filter((e) => e.result);
     const missedWords = entries.filter((e) => e.result.missedFirstTry).map((e) => e.word);
     const slowWords = entries
       .filter((e) => !e.result.missedFirstTry && e.result.timeMs > SLOW_ANSWER_MS)
@@ -151,20 +153,21 @@ export function InvadersMode({ speech }: { speech: Speech }) {
       timestamp: now(),
       score,
       maxScore: order.length * (FIRST_TRY_POINTS + MAX_SPEED_BONUS),
-      total: ALL_WORDS.length,
+      total: words.length,
       gotFirstTry: entries.length - missedWords.length,
       avgTimeMs,
       missedLetters: missedWords,
       slowLetters: slowWords,
+      items: words,
     });
-  }, [phase, order, results, score]);
+  }, [phase, words, order, results, score]);
 
   if (phase === 'report') {
     return (
       <SessionReport
         score={score}
         maxScore={order.length * (FIRST_TRY_POINTS + MAX_SPEED_BONUS)}
-        items={ALL_WORDS}
+        items={words}
         results={results}
         noun="words"
         perfectMessage="You know all your heart words by heart! ❤️🎉"

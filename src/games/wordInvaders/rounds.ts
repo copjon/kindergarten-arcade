@@ -1,9 +1,18 @@
 import { SIGHT_WORDS } from '../../data/sightWords';
+import type { SessionEntry } from '../../lib/history';
+import { pickPracticeItems, practiceWeights } from '../../lib/practice';
 import { shuffle } from '../../lib/random';
 
+export const GAME_ID = 'sight-words';
+export const WORDS_PER_SESSION = 6;
 export const APPEARANCES_PER_WORD = 2;
 export const OPTION_COUNT = 4;
 export const ALL_WORDS = SIGHT_WORDS.map((w) => w.word);
+
+/** The session's words, weighted toward ones recently missed or answered slowly. */
+export function pickSessionWords(history: SessionEntry[] = []): string[] {
+  return pickPracticeItems(practiceWeights(ALL_WORDS, history, GAME_ID), WORDS_PER_SESSION);
+}
 
 /** Every word appears APPEARANCES_PER_WORD times, never twice in a row. */
 export function buildOrder(words: string[] = ALL_WORDS): string[] {

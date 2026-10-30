@@ -1,8 +1,13 @@
 import { useState } from 'react';
-import { LETTERS, randomPicture, type LetterPicture } from '../../data/letters';
+import { LETTERS, randomPicture, type LetterInfo, type LetterPicture } from '../../data/letters';
 import type { useSpeech } from '../../hooks/useSpeech';
 
 type Speech = ReturnType<typeof useSpeech>;
+
+/** X's sound only shows up at the end of a word, so say where to listen for it. */
+function soundToSay(letter: LetterInfo, picture: LetterPicture): string {
+  return letter.soundAt === 'end' ? `${letter.sound}, at the end of ${picture.word}` : letter.sound;
+}
 
 interface Props {
   speech: Speech;
@@ -15,11 +20,12 @@ export function ExploreMode({ speech }: Props) {
   const current = LETTERS[index];
 
   function select(i: number) {
+    const nextPicture = randomPicture(LETTERS[i]);
     setIndex(i);
-    setPicture(randomPicture(LETTERS[i]));
+    setPicture(nextPicture);
     setBump(false);
     requestAnimationFrame(() => setBump(true));
-    speech.speak(LETTERS[i].sound, { rate: 0.75 });
+    speech.speak(soundToSay(LETTERS[i], nextPicture), { rate: 0.75 });
   }
 
   function anotherPicture() {
@@ -46,6 +52,9 @@ export function ExploreMode({ speech }: Props) {
           {current.letter}
         </div>
         <div className="spotlight-word">{picture.word}</div>
+        {current.soundAt === 'end' && (
+          <div className="spotlight-hint">{current.letter.toUpperCase()} is at the end!</div>
+        )}
         <div className="spotlight-controls">
           <button
             className="big-btn name"
@@ -53,7 +62,7 @@ export function ExploreMode({ speech }: Props) {
           >
             🔤 Letter Name
           </button>
-          <button className="big-btn sound" onClick={() => speech.speak(current.sound, { rate: 0.75 })}>
+          <button className="big-btn sound" onClick={() => speech.speak(soundToSay(current, picture), { rate: 0.75 })}>
             🎵 Letter Sound
           </button>
           <button className="big-btn word" onClick={() => speech.speak(picture.word, { rate: 0.85, pitch: 1.2 })}>

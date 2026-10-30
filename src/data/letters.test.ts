@@ -15,9 +15,12 @@ describe('letter data', () => {
     }
   });
 
-  it('only uses picture words that start with their letter', () => {
-    for (const p of allPictures) {
-      expect(p.word[0], `${p.word} under "${p.letter}"`).toBe(p.letter);
+  it('only uses picture words that start with their letter (or end with it, for end-sound letters)', () => {
+    for (const l of LETTERS) {
+      for (const p of l.pictures) {
+        const edge = l.soundAt === 'end' ? p.word.at(-1) : p.word[0];
+        expect(edge, `${p.word} under "${l.letter}"`).toBe(l.letter);
+      }
     }
   });
 
@@ -51,7 +54,7 @@ describe('randomPicture', () => {
   });
 
   it('still returns the only picture when there is just one', () => {
-    const x = LETTERS.find((l) => l.letter === 'x')!;
-    expect(randomPicture(x, x.pictures[0])).toEqual(x.pictures[0]);
+    const solo = { letter: 'z', sound: 'zzz', pictures: [{ word: 'zebra', emoji: '🦓' }] };
+    expect(randomPicture(solo, solo.pictures[0])).toEqual(solo.pictures[0]);
   });
 });

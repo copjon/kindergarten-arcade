@@ -1,4 +1,6 @@
 import { LETTERS, randomPicture, soundsAlike, type LetterInfo, type LetterPicture } from '../../data/letters';
+import type { SessionEntry } from '../../lib/history';
+import { pickPracticeItems, practiceWeights } from '../../lib/practice';
 import { shuffle } from '../../lib/random';
 
 export type RoundMode = 'pickPicture' | 'pickLetter';
@@ -16,12 +18,17 @@ export interface Round {
   options: RoundOption[];
 }
 
+export const GAME_ID = 'letter-sounds';
 export const OPTION_COUNT = 4;
+export const SESSION_LETTERS = 10;
 
-export const QUIZ_LETTERS = LETTERS.filter((l) => l.quizzable !== false);
+// Letters taught by their ending sound can't be asked as "starts with".
+export const QUIZ_LETTERS = LETTERS.filter((l) => l.soundAt !== 'end');
 
-export function newSessionOrder(): string[] {
-  return shuffle(QUIZ_LETTERS).map((l) => l.letter);
+/** A short session, weighted toward letters recently missed or answered slowly. */
+export function newSessionOrder(history: SessionEntry[] = []): string[] {
+  const letters = QUIZ_LETTERS.map((l) => l.letter);
+  return pickPracticeItems(practiceWeights(letters, history, GAME_ID), SESSION_LETTERS);
 }
 
 export function buildRound(letter: string, mode: RoundMode = Math.random() < 0.5 ? 'pickPicture' : 'pickLetter'): Round {

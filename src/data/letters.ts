@@ -7,8 +7,8 @@ export interface LetterInfo {
   letter: string;
   sound: string;
   pictures: LetterPicture[];
-  /** False when no picture word starts with this letter's sound, so it can't be asked fairly in Picture Match. */
-  quizzable?: false;
+  /** 'end' when words show the sound at the end (fox), because almost none start with it; such letters sit out Picture Match. */
+  soundAt?: 'end';
 }
 
 // Picture words are chosen to avoid common synonyms that start with a
@@ -244,9 +244,13 @@ export const LETTERS: LetterInfo[] = [
   {
     letter: 'x',
     sound: 'ks',
-    // X-ray starts with the letter name "ex"; almost no word starts with /ks/.
-    pictures: [{ word: 'x-ray', emoji: '🩻' }],
-    quizzable: false,
+    // X-ray starts with the letter name "ex", not /ks/, so X is taught at the end of a word.
+    pictures: [
+      { word: 'fox', emoji: '🦊' },
+      { word: 'box', emoji: '📦' },
+      { word: 'six', emoji: '6️⃣' },
+    ],
+    soundAt: 'end',
   },
   {
     letter: 'y',

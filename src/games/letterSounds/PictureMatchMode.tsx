@@ -5,14 +5,13 @@ import { BlastBurst } from '../../components/BlastBurst';
 import { LaserShot } from '../../components/LaserShot';
 import type { useSpeech } from '../../hooks/useSpeech';
 import { SessionReport, type ItemResult } from '../../components/SessionReport';
-import { saveSessionEntry } from '../../lib/history';
+import { loadHistory, saveSessionEntry } from '../../lib/history';
 import { SLOW_ANSWER_MS } from '../../lib/constants';
 import { playBlasterSound, playErrorSound } from '../../lib/sound';
 import { FIRST_TRY_POINTS, MAX_SPEED_BONUS, pointsFor, timeBonusFor } from '../../lib/scoring';
 import { describeLetter } from '../../lib/itemDisplay';
-import { buildRound, newSessionOrder, type RoundMode, type RoundOption } from './rounds';
+import { GAME_ID, buildRound, newSessionOrder, type RoundMode, type RoundOption } from './rounds';
 
-const GAME_ID = 'letter-sounds';
 const GAME_TITLE = 'Alpha Blast';
 
 type Speech = ReturnType<typeof useSpeech>;
@@ -29,7 +28,8 @@ const PROMPTS: Record<RoundMode, string> = {
 const now = () => Date.now();
 
 export function PictureMatchMode({ speech }: Props) {
-  const [sessionOrder, setSessionOrder] = useState(newSessionOrder);
+  const { speak } = speech;
+  const [sessionOrder, setSessionOrder] = useState(() => newSessionOrder(loadHistory()));
   const [index, setIndex] = useState(0);
   const [round, setRound] = useState(() => buildRound(sessionOrder[0]));
   const [score, setScore] = useState(0);
@@ -47,15 +47,23 @@ export function PictureMatchMode({ speech }: Props) {
 
   // Say the sound too: some letter names start with a different sound (W "double-you", Y "why", H "aitch").
   const hearLetter = useCallback(() => {
-    speech.speak(`${round.target.letter.toUpperCase()} says ${round.target.sound}`, { rate: 0.8, pitch: 1.2 });
-  }, [speech, round.target]);
+    speak(`${round.target.letter.toUpperCase()} says ${round.target.sound}`, { rate: 0.8, pitch: 1.2 });
+  }, [speak, round.target]);
 
   const hearPicture = useCallback(() => {
-    speech.speak(round.picture.word, { rate: 0.85, pitch: 1.2 });
-  }, [speech, round.picture]);
+    speak(round.picture.word, { rate: 0.85, pitch: 1.2 });
+  }, [speak, round.picture]);
+
+  // Say each round's prompt out loud: a non-reader can't use the letter without
+  // its sound, and a picture's name (iguana, not "lizard") is part of the question.
+  useEffect(() => {
+    if (phase !== 'playing') return;
+    const id = setTimeout(round.mode === 'pickPicture' ? hearLetter : hearPicture, 400);
+    return () => clearTimeout(id);
+  }, [round, phase, hearLetter, hearPicture]);
 
   function startNewSession() {
-    const order = newSessionOrder();
+    const order = newSessionOrder(loadHistory());
     const firstRound = buildRound(order[0]);
     setSessionOrder(order);
     setIndex(0);
@@ -105,7 +113,7 @@ export function PictureMatchMode({ speech }: Props) {
       setScore((s) => s + points);
       setResults((prev) => ({ ...prev, [option.letter]: { missedFirstTry: missedThisRound, timeMs, points } }));
       setMessage(!missedThisRound && bonus >= MAX_SPEED_BONUS ? 'Lightning fast! ⚡' : pickRandom(CHEERS));
-      await speech.speak(`${option.letter.toUpperCase()} is for ${round.picture.word}`, { rate: 0.85, pitch: 1.2 });
+      await speak(`${option.letter.toUpperCase()} is for ${round.picture.word}`, { rate: 0.85, pitch: 1.2 });
       setTimeout(() => {
         setBusy(false);
         advance();
@@ -144,6 +152,7 @@ export function PictureMatchMode({ speech }: Props) {
       avgTimeMs,
       missedLetters,
       slowLetters,
+      items: sessionOrder,
     });
   }, [phase, sessionOrder, results, score]);
 

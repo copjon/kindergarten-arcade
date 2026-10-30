@@ -11,6 +11,8 @@ export interface SessionEntry {
   // Practice items for any game (letters, words, ...); names kept for already-saved history.
   missedLetters: string[];
   slowLetters: string[];
+  /** Every item the session asked; missing on sessions saved before practice became adaptive. */
+  items?: string[];
 }
 
 const STORAGE_KEY = 'phonics.history.v1';

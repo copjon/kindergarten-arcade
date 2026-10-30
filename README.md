@@ -10,15 +10,15 @@ A little React SPA of learning games for kindergartners, with an 8-bit arcade lo
 
 *(high-frequency "heart words": I, a, the, and, me, to, an, is, am)*
 
-- **Invaders** — hear a word, then blast the alien ship carrying it before the fleet lands. A miss tells you what the word you hit actually says; after two misses the right ship glows as a hint. Each word comes up twice per session.
+- **Invaders** — hear a word, then blast the alien ship carrying it before the fleet lands. A miss tells you what the word you hit actually says; after two misses the right ship glows as a hint. Each session picks 6 of the words (twice each, 12 waves), favoring ones recently missed or answered slowly.
 - **Learn Words** — see each heart word with a picture and a sentence (word highlighted), and tap to hear it said, spelled out, or used in context. Heart words often can't be sounded out, so this mode is about learning them by heart.
 
 ### Alpha Blast
 
 *(letter recognition and phonics)*
 
-- **Explore Letters** — browse the alphabet, hear each letter's name and sound, and see a picture for a word that starts with it. Tap the picture for another example — every letter has several so it doesn't turn into rote memorization.
-- **Picture Match** — hear/see a letter and tap the picture whose word starts with it. Prompts with the letter and its sound, and never offers two pictures that start with the same sound (e.g. cat and kite). Runs through every letter except X (no common word starts with its /ks/ sound), scores points (with a speed bonus for quick, correct first tries only), and ends with a report of which letters need more practice — flagged either because they were missed or because they took a while to answer.
+- **Explore Letters** — browse the alphabet, hear each letter's name and sound, and see a picture for a word that starts with it (for X, a word that ends with it: fox, box, six). Tap the picture for another example — every letter has several so it doesn't turn into rote memorization.
+- **Picture Match** — hear a letter and its sound and tap the picture whose word starts with it, or hear a picture's word and tap its letter (prompts are spoken automatically). Never offers two choices that start with the same sound (e.g. cat and kite). Each session is 10 letters, favoring ones recently missed or answered slowly while mastered letters come back less often. X sits out, since it's taught by its ending sound in Explore Letters. Scores points (with a speed bonus for quick, correct first tries only), and ends with a report of which letters need more practice — flagged either because they were missed or because they took a while to answer.
 
 ### For Parents
 

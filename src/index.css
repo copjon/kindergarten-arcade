@@ -392,6 +392,12 @@ button {
   margin-bottom: 8px;
 }
 
+.spotlight-hint {
+  color: var(--ink-soft);
+  font-size: 0.85em;
+  margin: -4px 0 8px;
+}
+
 .spotlight-controls {
   display: flex;
   flex-wrap: wrap;

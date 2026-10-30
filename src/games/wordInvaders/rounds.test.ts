@@ -1,7 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { ALL_WORDS, APPEARANCES_PER_WORD, OPTION_COUNT, buildOptions, buildOrder } from './rounds';
+import { ALL_WORDS, APPEARANCES_PER_WORD, OPTION_COUNT, WORDS_PER_SESSION, buildOptions, buildOrder, pickSessionWords } from './rounds';
 
 describe('Word Invaders rounds', () => {
+  it('picks a short set of distinct words for each session', () => {
+    const words = pickSessionWords();
+    expect(words).toHaveLength(WORDS_PER_SESSION);
+    expect(new Set(words).size).toBe(WORDS_PER_SESSION);
+  });
+
   it('repeats every word the same number of times per session', () => {
     for (let run = 0; run < 25; run++) {
       const order = buildOrder();
