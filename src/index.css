@@ -1259,3 +1259,174 @@ button {
 .word-grid .letter-tile {
   font-size: 1.5rem;
 }
+
+/* ---------- Math Blasters ---------- */
+.op-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+}
+
+.op-pill {
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  border: 2px solid var(--line);
+  background: var(--card);
+  color: var(--ink-soft);
+  border-radius: 999px;
+  padding: 4px 14px;
+  cursor: pointer;
+}
+
+.op-pill.active {
+  border-color: var(--teal-deep);
+  background: var(--teal);
+  color: var(--ink);
+}
+
+.op-pill:disabled {
+  cursor: default;
+}
+
+.math-problem {
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 800;
+  font-size: clamp(2.6rem, 13vw, 4rem);
+  line-height: 1;
+  color: var(--ink);
+  margin: 4px 0 0;
+  letter-spacing: 2px;
+  white-space: nowrap;
+}
+
+.math-answer {
+  display: inline-block;
+  min-width: 1.2em;
+  text-align: center;
+  color: var(--purple);
+}
+
+.math-answer.solved {
+  color: var(--teal-deep);
+  animation: pop 0.35s ease;
+}
+
+.counters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px 14px;
+  min-height: 2.6rem;
+}
+
+.counter-group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+  max-width: 13rem;
+}
+
+.counter {
+  position: relative;
+  font-size: clamp(1.5rem, 7vw, 2rem);
+  line-height: 1.1;
+  transition: transform 0.15s ease;
+}
+
+.counter.counted {
+  transform: translateY(-6px) scale(1.15);
+  filter: drop-shadow(0 0 6px rgba(255, 213, 0, 0.9));
+}
+
+.counter.gone .counter-emoji {
+  opacity: 0.35;
+}
+
+.counter.gone::after {
+  content: '✖';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--coral);
+  font-size: 1.1em;
+}
+
+.counter-op,
+.count-op {
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 800;
+  font-size: clamp(1.6rem, 7vw, 2.2rem);
+  color: var(--ink-soft);
+}
+
+.math-fleet {
+  /* Counting takes longer than reading a word, so the fleet comes down slower. */
+  animation-duration: 20s;
+}
+
+.count-builder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.stepper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.stepper-btn {
+  border: none;
+  background: var(--bg-bottom);
+  color: var(--ink);
+  border-radius: 8px;
+  width: 48px;
+  height: 34px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.stepper-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.stepper-value {
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 800;
+  font-size: clamp(2.4rem, 11vw, 3.4rem);
+  line-height: 1.1;
+  color: var(--ink);
+  min-width: 1.4em;
+  text-align: center;
+}
+
+.count-answer {
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 800;
+  font-size: clamp(2.4rem, 11vw, 3.4rem);
+  line-height: 1.1;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+.count-tally {
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 800;
+  font-size: 1.4rem;
+  color: var(--gold-deep);
+  margin: 0;
+  min-height: 1.6em;
+}

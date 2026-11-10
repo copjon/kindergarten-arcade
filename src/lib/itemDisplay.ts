@@ -1,5 +1,6 @@
 import { LETTERS } from '../data/letters';
 import { SIGHT_WORDS } from '../data/sightWords';
+import { parseFact, writtenFact } from '../data/mathFacts';
 
 export interface ItemDisplay {
   icon: string;
@@ -17,10 +18,17 @@ export function describeWord(word: string): ItemDisplay {
   return { icon: info?.emoji ?? '❤️', label: word, tag: word };
 }
 
+export function describeFact(key: string): ItemDisplay {
+  const fact = parseFact(key);
+  if (!fact) return { icon: '🔢', label: key, tag: key };
+  return { icon: fact.op === '+' ? '➕' : '➖', label: `${writtenFact(fact)} = ${fact.answer}`, tag: writtenFact(fact) };
+}
+
 /** How each game's practice items (stored in history) are shown to parents. */
 export const PRACTICE_KINDS: Record<string, { heading: string; describe: (item: string) => ItemDisplay }> = {
   'sight-words': { heading: 'Words to work on', describe: describeWord },
   'letter-sounds': { heading: 'Letters to work on', describe: describeLetter },
+  'math-blasters': { heading: 'Math facts to work on', describe: describeFact },
 };
 
 export function describeItem(gameId: string, item: string): ItemDisplay {

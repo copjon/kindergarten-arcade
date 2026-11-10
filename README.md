@@ -1,6 +1,6 @@
 # Kindergarten Arcade
 
-A little React SPA of learning games for kindergartners, with an 8-bit arcade look. Phonics today, more subjects (starting with math) on the way. Built entirely with [Claude Code](https://claude.com/claude-code).
+A little React SPA of learning games for kindergartners, with an 8-bit arcade look. Phonics and early math, with more on the way. Built entirely with [Claude Code](https://claude.com/claude-code).
 
 🔗 **Play it here:** https://copjon.github.io/kindergarten-arcade/
 
@@ -20,11 +20,18 @@ A little React SPA of learning games for kindergartners, with an 8-bit arcade lo
 - **Explore Letters** — browse the alphabet, hear each letter's name and sound, and see a picture for a word that starts with it (for X, a word that ends with it: fox, box, six). Tap the picture for another example — every letter has several so it doesn't turn into rote memorization.
 - **Picture Match** — hear a letter and its sound and tap the picture whose word starts with it, or hear a picture's word and tap its letter (prompts are spoken automatically). Never offers two choices that start with the same sound (e.g. cat and kite). Each session is 10 letters, favoring ones recently missed or answered slowly while mastered letters come back less often. X sits out, since it's taught by its ending sound in Explore Letters. Scores points (with a speed bonus for quick, correct first tries only), and ends with a report of which letters need more practice — flagged either because they were missed or because they took a while to answer.
 
+### Math Blasters
+
+*(addition and subtraction facts with numbers up to 10)*
+
+- **Blast** — see and hear a problem ("What is 7 take away 2?") and blast the UFO carrying the answer. Pick ➕ Add, ➖ Take away, or 🔀 Mix (an even split; the choice is remembered). A "Show me" button — or any miss — brings up pictures to count: two groups for adding, crossed-out items for taking away. Wrong answers are the likely mistakes (off by one, or adding instead of taking away), and after two misses the right UFO glows. Each session is 10 facts, favoring ones recently missed or answered slowly; facts with a zero (3 + 0, 5 − 5) come up less since they teach little. The fleet descends slower than in Word Invaders to leave time for counting.
+- **Count It** — build any fact up to 10 with the arrows and tap "Count with me" to hear each picture counted aloud as it lights up, then the whole fact.
+
 ### For Parents
 
 A dashboard (linked from the home screen) that stores every finished round in the browser's `localStorage` — no account or server needed. It shows:
 
-- "Words to work on" and "letters to work on" lists, weighted by how often each was missed or answered slowly across all past sessions.
+- "Words to work on", "letters to work on", and "math facts to work on" lists, weighted by how often each was missed or answered slowly across all past sessions.
 - Full game history with score, first-try accuracy, and average response time per session.
 
 ## Tech

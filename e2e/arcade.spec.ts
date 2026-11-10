@@ -44,6 +44,7 @@ test('home screen lists the games and the parent dashboard', async ({ page }) =>
   await expect(page.getByRole('heading', { level: 1 })).toContainText(/Kindergarten\s*Arcade/i);
   await expect(page.getByText('Word Invaders', { exact: true })).toBeVisible();
   await expect(page.getByText('Alpha Blast', { exact: true })).toBeVisible();
+  await expect(page.getByText('Math Blasters', { exact: true })).toBeVisible();
   await expect(page.getByRole('button', { name: /For Parents/ })).toBeVisible();
 });
 
@@ -97,6 +98,35 @@ test.describe('Alpha Blast', () => {
   });
 });
 
+test.describe('Math Blasters', () => {
+  test('blasting the right answer scores and moves to the next problem', async ({ page }) => {
+    await openGame(page, 'Math Blasters');
+    await expect(page.getByText('Problem 1 of 10')).toBeVisible();
+
+    const text = (await page.locator('.math-problem').textContent())!;
+    const [, a, op, b] = /(\d+) ([+−]) (\d+)/.exec(text)!;
+    const answer = op === '+' ? Number(a) + Number(b) : Number(a) - Number(b);
+
+    await page.getByRole('button', { name: `answer ${answer}`, exact: true }).click({ force: true });
+    await expect(page.locator('.invader.hit')).toHaveCount(1);
+    await expect(page.locator('.quiz-score')).not.toHaveText('⭐ 0 pts');
+    await expect(page.getByText('Problem 2 of 10')).toBeVisible({ timeout: 10_000 });
+  });
+
+  test('Count It builds a fact and counts it out with pictures', async ({ page }) => {
+    await openGame(page, 'Math Blasters');
+    await page.getByRole('button', { name: /Count It/ }).click();
+    await page.getByRole('button', { name: /Take away/ }).click();
+    await page.getByRole('button', { name: 'First number up' }).click();
+    await page.getByRole('button', { name: 'First number up' }).click();
+    // 5 take away 2: five pictures, two crossed out.
+    await expect(page.locator('.counter')).toHaveCount(5);
+    await expect(page.locator('.counter.gone')).toHaveCount(2);
+    await page.getByRole('button', { name: 'Show the answer' }).click();
+    await expect(page.locator('.count-answer')).toHaveText('3');
+  });
+});
+
 test('parent dashboard shows saved practice history per game', async ({ page }) => {
   await page.addInitScript(() => {
     const entry = (gameId: string, gameTitle: string, missed: string[]) => ({
@@ -114,12 +144,18 @@ test('parent dashboard shows saved practice history per game', async ({ page }) 
     });
     localStorage.setItem(
       'phonics.history.v1',
-      JSON.stringify([entry('sight-words', 'Word Invaders', ['the']), entry('letter-sounds', 'Alpha Blast', ['q'])]),
+      JSON.stringify([
+        entry('sight-words', 'Word Invaders', ['the']),
+        entry('letter-sounds', 'Alpha Blast', ['q']),
+        entry('math-blasters', 'Math Blasters', ['7-2']),
+      ]),
     );
   });
   await page.goto('./');
   await page.getByRole('button', { name: /For Parents/ }).click();
   await expect(page.getByRole('heading', { name: 'Words to work on' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Letters to work on' })).toBeVisible();
-  await expect(page.locator('.history-row')).toHaveCount(2);
+  await expect(page.getByRole('heading', { name: 'Math facts to work on' })).toBeVisible();
+  await expect(page.getByText('7 − 2 = 5')).toBeVisible();
+  await expect(page.locator('.history-row')).toHaveCount(3);
 });
