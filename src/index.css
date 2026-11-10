@@ -63,6 +63,11 @@ button {
     animation-duration: 0.001ms !important;
     transition-duration: 0.001ms !important;
   }
+
+  /* A near-instant descent would "land" every wave the moment it appears; hold the fleet still instead. */
+  .invader-fleet {
+    animation: none !important;
+  }
 }
 
 /* ---------- Home ---------- */
