@@ -63,6 +63,11 @@ button {
     animation-duration: 0.001ms !important;
     transition-duration: 0.001ms !important;
   }
+
+  /* A near-instant descent would "land" every wave the moment it appears; hold the fleet still instead. */
+  .invader-fleet {
+    animation: none !important;
+  }
 }
 
 /* ---------- Home ---------- */
@@ -1258,4 +1263,299 @@ button {
 
 .word-grid .letter-tile {
   font-size: 1.5rem;
+}
+
+/* ---------- Math Blasters ---------- */
+.op-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+}
+
+.op-pill {
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  border: 2px solid var(--line);
+  background: var(--card);
+  color: var(--ink-soft);
+  border-radius: 999px;
+  padding: 4px 14px;
+  cursor: pointer;
+}
+
+.op-pill.active {
+  border-color: var(--teal-deep);
+  background: var(--teal);
+  color: var(--ink);
+}
+
+.op-pill:disabled {
+  cursor: default;
+}
+
+.math-problem {
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 800;
+  font-size: clamp(2.6rem, 13vw, 4rem);
+  line-height: 1;
+  color: var(--ink);
+  margin: 4px 0 0;
+  letter-spacing: 2px;
+  white-space: nowrap;
+}
+
+.math-answer {
+  display: inline-block;
+  min-width: 1.2em;
+  text-align: center;
+  color: var(--purple);
+}
+
+.math-answer.solved {
+  color: var(--teal-deep);
+  animation: pop 0.35s ease;
+}
+
+.builder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+}
+
+.builder-groups,
+.builder-group-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.builder-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px 10px;
+  border: 2px dashed var(--line);
+  border-radius: 12px;
+  min-width: 150px;
+}
+
+.builder-target {
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+  color: var(--ink-soft);
+  text-align: center;
+}
+
+/* Rows of five, like a ten-frame, so groups are easy to see and count. */
+.builder-tray {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 5), auto);
+  justify-content: center;
+  gap: 2px 4px;
+  min-height: 2.6rem;
+}
+
+.builder-buttons {
+  display: flex;
+  gap: 6px;
+}
+
+.builder-btn {
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 10px;
+  padding: 6px 14px;
+  cursor: pointer;
+  color: var(--ink);
+  box-shadow: 0 3px 0 var(--btn-deep);
+}
+
+.builder-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--btn-deep);
+}
+
+.builder-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.builder-btn.add {
+  background: var(--mint);
+  --btn-deep: #00b36d;
+}
+
+.builder-btn.subtract {
+  background: #ffd7d4;
+  --btn-deep: var(--coral);
+}
+
+.counter {
+  position: relative;
+  font-size: clamp(1.6rem, 7.5vw, 2rem);
+  line-height: 1.1;
+  padding: 2px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  animation: pop 0.25s ease;
+}
+
+.counter:active {
+  transform: scale(0.9);
+}
+
+.counter.gone .counter-emoji {
+  opacity: 0.35;
+}
+
+.counter.gone::after {
+  content: '✖';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--coral);
+  font-size: 1.1em;
+}
+
+.counter-reset {
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 600;
+  font-size: 0.85rem;
+  border: none;
+  background: none;
+  color: var(--ink-soft);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.counter-op,
+.count-op {
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 800;
+  font-size: clamp(1.6rem, 7vw, 2.2rem);
+  color: var(--ink-soft);
+}
+
+.answer-pad {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  width: 100%;
+  max-width: 420px;
+}
+
+.answer-pad .invader {
+  padding: 12px 2px;
+  animation: none;
+}
+
+.answer-pad .invader.wrong {
+  animation: shakex 0.4s ease;
+}
+
+.answer-pad .invader.hit {
+  animation: rightBlast 0.4s ease;
+}
+
+.answer-pad .invader.hint {
+  animation: hint-glow 0.9s ease-in-out infinite;
+}
+
+.math-fleet {
+  /* Counting takes longer than reading a word, so the fleet comes down slower. */
+  animation-duration: 20s;
+}
+
+.count-builder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.stepper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.stepper-btn {
+  border: none;
+  background: var(--bg-bottom);
+  color: var(--ink);
+  border-radius: 8px;
+  width: 48px;
+  height: 34px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.stepper-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.stepper-value {
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 800;
+  font-size: clamp(2.4rem, 11vw, 3.4rem);
+  line-height: 1.1;
+  color: var(--ink);
+  min-width: 1.4em;
+  text-align: center;
+}
+
+.count-answer {
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 800;
+  font-size: clamp(2.4rem, 11vw, 3.4rem);
+  line-height: 1.1;
+  padding: 0 4px;
+}
+
+.count-message {
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--ink);
+  margin: 4px 0 0;
+  text-align: center;
+}
+
+.number-pad {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  width: 100%;
+  max-width: 420px;
+}
+
+.number-pad .letter-tile {
+  background: var(--bg-bottom);
+  font-size: 1.5rem;
+  padding: 8px 0;
+}
+
+.number-pad .letter-tile.active {
+  background: var(--teal-deep);
+  box-shadow: 0 3px 0 var(--ink);
+}
+
+.number-pad .letter-tile.wrong {
+  background: #ffd7d4;
+  animation: shakex 0.4s ease;
 }

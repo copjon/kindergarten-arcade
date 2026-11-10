@@ -1,6 +1,7 @@
 import type { GameMeta } from '../types/game';
 import { LetterSoundsGame } from './letterSounds/LetterSoundsGame';
 import { WordInvadersGame } from './wordInvaders/WordInvadersGame';
+import { MathBlastersGame } from './mathBlasters/MathBlastersGame';
 
 export const GAMES: GameMeta[] = [
   {
@@ -18,5 +19,13 @@ export const GAMES: GameMeta[] = [
     emoji: '🚀',
     color: '#FF2D6D',
     Component: LetterSoundsGame,
+  },
+  {
+    id: 'math-blasters',
+    title: 'Math Blasters',
+    tagline: 'Add and subtract to blast the right answer!',
+    emoji: '🛸',
+    color: '#00C2A8',
+    Component: MathBlastersGame,
   },
 ];
