@@ -24,8 +24,10 @@ A little React SPA of learning games for kindergartners, with an 8-bit arcade lo
 
 *(addition and subtraction facts with numbers up to 10)*
 
-- **Blast** — see and hear a problem ("What is 7 take away 2?") and blast the UFO carrying the answer. Pick ➕ Add, ➖ Take away, or 🔀 Mix (an even split; the choice is remembered). A "Show me" button — or any miss — brings up pictures to count: two groups for adding, crossed-out items for taking away. Wrong answers are the likely mistakes (off by one, or adding instead of taking away), and after two misses the right UFO glows. Each session is 10 facts, favoring ones recently missed or answered slowly; facts with a zero (3 + 0, 5 − 5) come up less since they teach little. The fleet descends slower than in Word Invaders to leave time for counting.
-- **Count It** — build any fact up to 10 with the arrows and tap "Count with me" to hear each picture counted aloud as it lights up, then the whole fact.
+- **Blast** — see and hear a problem ("What is 7 subtract 2?") and blast the UFO carrying the answer. Pick ➕ Add, ➖ Subtract, or 🔀 Mix (an even split; the choice is remembered). A "Show me" button, or any miss, brings up pictures for him to work through (see below). Wrong answers are the likely mistakes (off by one, or adding instead of subtracting), and after two misses the right UFO glows. Each session is 10 facts, favoring ones recently missed or answered slowly; facts with a zero (3 + 0, 5 − 5) come up less since they teach little. The fleet descends slower than in Word Invaders to leave time for counting.
+- **Count It** — build any fact up to 10 with the arrows (or roll a 🎲 new one), work it out with the pictures, and answer on a 0–10 number pad. The answer is never shown or said until he picks it.
+
+**The pictures never do the work for him.** They're laid out in rows of five, like a ten-frame. For adding, he taps each picture to count it; it lights up with its number and the voice says that number, so the count only moves when he taps. For subtracting, he first crosses out the right number of pictures himself (a slip can be undone), then taps to count what's left. "Start over" clears it.
 
 ### For Parents
 

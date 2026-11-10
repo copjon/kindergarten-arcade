@@ -33,7 +33,7 @@ const MATH_CHEERS = [
 
 const OP_CHOICES: { value: OpChoice; label: string }[] = [
   { value: 'add', label: '➕ Add' },
-  { value: 'subtract', label: '➖ Take away' },
+  { value: 'subtract', label: '➖ Subtract' },
   { value: 'mix', label: '🔀 Mix' },
 ];
 
@@ -227,7 +227,7 @@ export function BlastMode({ speech }: { speech: Speech }) {
       <SpeechBubble message={message} />
 
       <div className="quiz-stage">
-        <div className="op-filter" role="group" aria-label="Choose adding or taking away">
+        <div className="op-filter" role="group" aria-label="Choose adding or subtracting">
           {OP_CHOICES.map((choice) => (
             <button
               key={choice.value}
@@ -260,7 +260,14 @@ export function BlastMode({ speech }: { speech: Speech }) {
           </span>
         </p>
 
-        {showCounters && <Counters fact={fact} emoji={counterEmoji(fact)} />}
+        {showCounters && (
+          <Counters
+            key={fact.key}
+            fact={fact}
+            emoji={counterEmoji(fact)}
+            onCount={(n) => speak(String(n), { rate: 1, pitch: 1.2 })}
+          />
+        )}
 
         <div className="invader-controls">
           <button className="big-btn name" onClick={() => speak(askFor(fact), { rate: 0.85 })}>

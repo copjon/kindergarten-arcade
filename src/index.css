@@ -1320,31 +1320,68 @@ button {
 
 .counters {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 8px 14px;
+  gap: 2px;
   min-height: 2.6rem;
 }
 
+/* Rows of five, like a ten-frame, so groups are easy to see and count. */
 .counter-group {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 5), auto);
   justify-content: center;
+  gap: 6px;
+}
+
+.counters-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   gap: 4px;
-  max-width: 13rem;
 }
 
 .counter {
   position: relative;
-  font-size: clamp(1.5rem, 7vw, 2rem);
+  font-size: clamp(1.6rem, 7.5vw, 2.1rem);
   line-height: 1.1;
+  padding: 4px;
+  border: 2px dashed transparent;
+  border-radius: 10px;
+  background: none;
+  cursor: pointer;
   transition: transform 0.15s ease;
 }
 
+.counter:not(.counted):not(.gone) {
+  border-color: var(--line);
+}
+
+.counter:active {
+  transform: scale(0.92);
+}
+
 .counter.counted {
-  transform: translateY(-6px) scale(1.15);
-  filter: drop-shadow(0 0 6px rgba(255, 213, 0, 0.9));
+  border: 2px solid var(--gold);
+  background: #fff7cc;
+}
+
+.counter-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  min-width: 1.4rem;
+  height: 1.4rem;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--purple);
+  color: #fff;
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 800;
+  font-size: 0.85rem;
+  line-height: 1.4rem;
+  text-align: center;
+  animation: pop 0.25s ease;
 }
 
 .counter.gone .counter-emoji {
@@ -1360,6 +1397,25 @@ button {
   justify-content: center;
   color: var(--coral);
   font-size: 1.1em;
+}
+
+.counter-instruction {
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 700;
+  color: var(--ink-soft);
+  margin: 0;
+  text-align: center;
+}
+
+.counter-reset {
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 600;
+  font-size: 0.85rem;
+  border: none;
+  background: none;
+  color: var(--ink-soft);
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 .counter-op,
@@ -1421,17 +1477,38 @@ button {
   font-weight: 800;
   font-size: clamp(2.4rem, 11vw, 3.4rem);
   line-height: 1.1;
-  background: none;
-  border: none;
-  cursor: pointer;
   padding: 0 4px;
 }
 
-.count-tally {
+.count-message {
   font-family: 'Baloo 2', sans-serif;
-  font-weight: 800;
-  font-size: 1.4rem;
-  color: var(--gold-deep);
-  margin: 0;
-  min-height: 1.6em;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--ink);
+  margin: 4px 0 0;
+  text-align: center;
+}
+
+.number-pad {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  width: 100%;
+  max-width: 420px;
+}
+
+.number-pad .letter-tile {
+  background: var(--bg-bottom);
+  font-size: 1.5rem;
+  padding: 8px 0;
+}
+
+.number-pad .letter-tile.active {
+  background: var(--teal-deep);
+  box-shadow: 0 3px 0 var(--ink);
+}
+
+.number-pad .letter-tile.wrong {
+  background: #ffd7d4;
+  animation: shakex 0.4s ease;
 }

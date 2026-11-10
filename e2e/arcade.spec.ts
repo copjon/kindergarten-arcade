@@ -113,16 +113,23 @@ test.describe('Math Blasters', () => {
     await expect(page.getByText('Problem 2 of 10')).toBeVisible({ timeout: 10_000 });
   });
 
-  test('Count It builds a fact and counts it out with pictures', async ({ page }) => {
+  test('Count It: cross out, count, and answer it yourself', async ({ page }) => {
     await openGame(page, 'Math Blasters');
     await page.getByRole('button', { name: /Count It/ }).click();
-    await page.getByRole('button', { name: /Take away/ }).click();
+    await page.getByRole('button', { name: /Subtract/ }).click();
     await page.getByRole('button', { name: 'First number up' }).click();
     await page.getByRole('button', { name: 'First number up' }).click();
-    // 5 take away 2: five pictures, two crossed out.
-    await expect(page.locator('.counter')).toHaveCount(5);
+    // 5 subtract 2: five pictures, none crossed out until the child does it.
+    const pictures = page.locator('.counter');
+    await expect(pictures).toHaveCount(5);
+    await expect(page.locator('.counter.gone')).toHaveCount(0);
+    await pictures.nth(3).click();
+    await pictures.nth(4).click();
     await expect(page.locator('.counter.gone')).toHaveCount(2);
-    await page.getByRole('button', { name: 'Show the answer' }).click();
+    for (const i of [0, 1, 2]) await pictures.nth(i).click();
+    await expect(page.locator('.counter-badge')).toHaveText(['1', '2', '3']);
+    await expect(page.locator('.count-answer')).toHaveText('?');
+    await page.getByRole('button', { name: 'answer 3', exact: true }).click();
     await expect(page.locator('.count-answer')).toHaveText('3');
   });
 });

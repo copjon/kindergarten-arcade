@@ -29,7 +29,7 @@ describe('math facts', () => {
 
   it('writes and speaks facts in kid-friendly words', () => {
     expect(writtenFact(parseFact('7-2')!)).toBe('7 − 2');
-    expect(spokenFact(parseFact('7-2')!)).toBe('7 take away 2');
+    expect(spokenFact(parseFact('7-2')!)).toBe('7 subtract 2');
     expect(spokenFact(parseFact('3+4')!)).toBe('3 plus 4');
   });
 });

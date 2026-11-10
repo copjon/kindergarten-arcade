@@ -23,7 +23,7 @@ export const GAMES: GameMeta[] = [
   {
     id: 'math-blasters',
     title: 'Math Blasters',
-    tagline: 'Add and take away to blast the right answer!',
+    tagline: 'Add and subtract to blast the right answer!',
     emoji: '🛸',
     color: '#00C2A8',
     Component: MathBlastersGame,

@@ -27,16 +27,18 @@ describe('Math Blasters gameplay', () => {
     const { speak, ships } = await startGame();
     expect(screen.getByText('Problem 1 of 10')).toBeInTheDocument();
     expect(ships).toHaveLength(4);
-    expect(speak.mock.calls[0][0]).toMatch(/^What is \d+ (plus|take away) \d+\?$/);
+    expect(speak.mock.calls[0][0]).toMatch(/^What is \d+ (plus|subtract) \d+\?$/);
   });
 
   it('a wrong hit scores nothing and brings out pictures to count', async () => {
     const { wrong } = await startGame();
-    expect(screen.queryByRole('img')).not.toBeInTheDocument();
+    expect(screen.queryByRole('group', { name: 'Pictures to count' })).not.toBeInTheDocument();
     const n = wrong[0].textContent!.replace('🛸', '');
     await userEvent.click(wrong[0]);
     expect(screen.getByText(`Not ${n}. Count the pictures and try again! 👀`)).toBeInTheDocument();
-    expect(screen.getByRole('img')).toBeInTheDocument();
+    expect(screen.getByRole('group', { name: 'Pictures to count' })).toBeInTheDocument();
+    // Pictures come up uncounted: counting is the child's job.
+    expect(screen.queryAllByRole('button', { name: /^counted/ })).toHaveLength(0);
     expect(screen.getByText('⭐ 0 pts')).toBeInTheDocument();
   });
 

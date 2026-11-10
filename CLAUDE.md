@@ -47,4 +47,4 @@ In a Claude Code cloud container, Playwright's bundled browser may not match; po
 - Keep wrong answers pedagogically meaningful: no distractor that is also correct by ear (cat/kite), and use likely mistakes (look-alike words, off-by-one numbers).
 - Moving targets (invader fleets) never settle; Playwright clicks on them need `{ force: true }`.
 - `prefers-reduced-motion` shrinks every animation to ~0ms, so an `animationend` handler fires instantly. The invader fleets are exempted (`animation: none`) because their landing handler would otherwise loop; do the same for any new animation that drives game logic.
-- Kid-facing text is short, encouraging, and spoken aloud; use "take away" rather than "minus".
+- Kid-facing text is short, encouraging, and spoken aloud; math says "subtract" (not "take away" or "minus"). When a game helps with counting, the child does the counting; never count or reveal the answer for them.

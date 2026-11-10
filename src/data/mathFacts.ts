@@ -40,9 +40,9 @@ export function writtenFact(fact: MathFact): string {
   return `${fact.a} ${fact.op === '+' ? '+' : '−'} ${fact.b}`;
 }
 
-/** How a fact is read aloud: "3 plus 4", "7 take away 2". */
+/** How a fact is read aloud: "3 plus 4", "7 subtract 2". */
 export function spokenFact(fact: MathFact): string {
-  return `${fact.a} ${fact.op === '+' ? 'plus' : 'take away'} ${fact.b}`;
+  return `${fact.a} ${fact.op === '+' ? 'plus' : 'subtract'} ${fact.b}`;
 }
 
 /** Facts with a zero (or n − n) are easy wins; they still show up, just less often. */
