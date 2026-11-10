@@ -75,3 +75,17 @@ export function playErrorSound(): void {
   osc.start(now);
   osc.stop(now + 0.26);
 }
+
+/** A soft rising blip when a picture pops in. */
+export function playPopSound(): void {
+  const ctx = getAudioContext();
+  if (!ctx) return;
+  sweep(ctx, 'triangle', 420, 880, 0.2, 0.09, ctx.currentTime);
+}
+
+/** A short falling blip when a picture is crossed out. */
+export function playSwooshSound(): void {
+  const ctx = getAudioContext();
+  if (!ctx) return;
+  sweep(ctx, 'triangle', 700, 260, 0.18, 0.12, ctx.currentTime);
+}

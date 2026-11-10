@@ -11,7 +11,7 @@ import { SLOW_ANSWER_MS } from '../../lib/constants';
 import { playBlasterSound, playErrorSound } from '../../lib/sound';
 import { FIRST_TRY_POINTS, MAX_SPEED_BONUS, pointsFor, timeBonusFor } from '../../lib/scoring';
 import { describeFact } from '../../lib/itemDisplay';
-import { Counters } from './Counters';
+import { PictureBuilder } from './PictureBuilder';
 import { GAME_ID, buildOptions, pickSessionFacts, type OpChoice } from './rounds';
 
 type Speech = ReturnType<typeof useSpeech>;
@@ -69,7 +69,7 @@ export function BlastMode({ speech }: { speech: Speech }) {
   const [score, setScore] = useState(0);
   const [results, setResults] = useState<Record<string, ItemResult>>({});
   const [misses, setMisses] = useState(0);
-  const [showCounters, setShowCounters] = useState(false);
+  const [showBuilder, setShowBuilder] = useState(false);
   const [message, setMessage] = useState(PROMPT);
   const [busy, setBusy] = useState(false);
   const [wrongAnswer, setWrongAnswer] = useState<number | null>(null);
@@ -92,7 +92,7 @@ export function BlastMode({ speech }: { speech: Speech }) {
   function resetRoundState() {
     setWave(0);
     setMisses(0);
-    setShowCounters(false);
+    setShowBuilder(false);
     setWrongAnswer(null);
     setHitAnswer(null);
     setShotAnswer(null);
@@ -134,8 +134,8 @@ export function BlastMode({ speech }: { speech: Speech }) {
   function handleFleetLanded(e: AnimationEvent<HTMLDivElement>) {
     if (e.target !== e.currentTarget || busy) return;
     setWrongAnswer(null);
-    setShowCounters(true);
-    setMessage('Here they come again! Count with the pictures 👀');
+    setShowBuilder(true);
+    setMessage('Here they come again! Build it with pictures 👀');
     setWave((w) => w + 1);
   }
 
@@ -147,10 +147,10 @@ export function BlastMode({ speech }: { speech: Speech }) {
     if (answer !== fact.answer) {
       setMisses((m) => m + 1);
       setWrongAnswer(answer);
-      setShowCounters(true);
-      setMessage(`Not ${answer}. Count the pictures and try again! 👀`);
+      setShowBuilder(true);
+      setMessage(`Not ${answer}. Build it with pictures and try again! 👀`);
       playErrorSound();
-      speak(`Not ${answer}. Let's count. ${askFor(fact)}`, { rate: 0.85 });
+      speak(`Not ${answer}. Build it with pictures. ${askFor(fact)}`, { rate: 0.85 });
       setTimeout(() => {
         setWrongAnswer(null);
         setShotAnswer(null);
@@ -260,22 +260,15 @@ export function BlastMode({ speech }: { speech: Speech }) {
           </span>
         </p>
 
-        {showCounters && (
-          <Counters
-            key={fact.key}
-            fact={fact}
-            emoji={counterEmoji(fact)}
-            onCount={(n) => speak(String(n), { rate: 1, pitch: 1.2 })}
-          />
-        )}
+        {showBuilder && <PictureBuilder key={fact.key} fact={fact} emoji={counterEmoji(fact)} />}
 
         <div className="invader-controls">
           <button className="big-btn name" onClick={() => speak(askFor(fact), { rate: 0.85 })}>
             🔊 Hear it
           </button>
-          {!showCounters && (
-            <button className="big-btn word" onClick={() => setShowCounters(true)}>
-              {counterEmoji(fact)} Show me
+          {!showBuilder && (
+            <button className="big-btn word" onClick={() => setShowBuilder(true)}>
+              {counterEmoji(fact)} Build it
             </button>
           )}
         </div>

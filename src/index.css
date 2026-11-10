@@ -1318,70 +1318,100 @@ button {
   animation: pop 0.35s ease;
 }
 
-.counters {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  min-height: 2.6rem;
-}
-
-/* Rows of five, like a ten-frame, so groups are easy to see and count. */
-.counter-group {
-  display: grid;
-  grid-template-columns: repeat(var(--cols, 5), auto);
-  justify-content: center;
-  gap: 6px;
-}
-
-.counters-wrap {
+.builder {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4px;
+  width: 100%;
+}
+
+.builder-groups,
+.builder-group-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.builder-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px 10px;
+  border: 2px dashed var(--line);
+  border-radius: 12px;
+  min-width: 150px;
+}
+
+.builder-target {
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+  color: var(--ink-soft);
+  text-align: center;
+}
+
+/* Rows of five, like a ten-frame, so groups are easy to see and count. */
+.builder-tray {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 5), auto);
+  justify-content: center;
+  gap: 2px 4px;
+  min-height: 2.6rem;
+}
+
+.builder-buttons {
+  display: flex;
+  gap: 6px;
+}
+
+.builder-btn {
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 10px;
+  padding: 6px 14px;
+  cursor: pointer;
+  color: var(--ink);
+  box-shadow: 0 3px 0 var(--btn-deep);
+}
+
+.builder-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--btn-deep);
+}
+
+.builder-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.builder-btn.add {
+  background: var(--mint);
+  --btn-deep: #00b36d;
+}
+
+.builder-btn.subtract {
+  background: #ffd7d4;
+  --btn-deep: var(--coral);
 }
 
 .counter {
   position: relative;
-  font-size: clamp(1.6rem, 7.5vw, 2.1rem);
+  font-size: clamp(1.6rem, 7.5vw, 2rem);
   line-height: 1.1;
-  padding: 4px;
-  border: 2px dashed transparent;
-  border-radius: 10px;
+  padding: 2px;
+  border: none;
   background: none;
   cursor: pointer;
-  transition: transform 0.15s ease;
-}
-
-.counter:not(.counted):not(.gone) {
-  border-color: var(--line);
+  animation: pop 0.25s ease;
 }
 
 .counter:active {
-  transform: scale(0.92);
-}
-
-.counter.counted {
-  border: 2px solid var(--gold);
-  background: #fff7cc;
-}
-
-.counter-badge {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  min-width: 1.4rem;
-  height: 1.4rem;
-  padding: 0 4px;
-  border-radius: 999px;
-  background: var(--purple);
-  color: #fff;
-  font-family: 'Baloo 2', sans-serif;
-  font-weight: 800;
-  font-size: 0.85rem;
-  line-height: 1.4rem;
-  text-align: center;
-  animation: pop 0.25s ease;
+  transform: scale(0.9);
 }
 
 .counter.gone .counter-emoji {
@@ -1397,14 +1427,6 @@ button {
   justify-content: center;
   color: var(--coral);
   font-size: 1.1em;
-}
-
-.counter-instruction {
-  font-family: 'Baloo 2', sans-serif;
-  font-weight: 700;
-  color: var(--ink-soft);
-  margin: 0;
-  text-align: center;
 }
 
 .counter-reset {

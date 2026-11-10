@@ -30,15 +30,15 @@ describe('Math Blasters gameplay', () => {
     expect(speak.mock.calls[0][0]).toMatch(/^What is \d+ (plus|subtract) \d+\?$/);
   });
 
-  it('a wrong hit scores nothing and brings out pictures to count', async () => {
+  it('a wrong hit scores nothing and brings out the picture builder', async () => {
     const { wrong } = await startGame();
-    expect(screen.queryByRole('group', { name: 'Pictures to count' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('group', { name: 'Build it with pictures' })).not.toBeInTheDocument();
     const n = wrong[0].textContent!.replace('🛸', '');
     await userEvent.click(wrong[0]);
-    expect(screen.getByText(`Not ${n}. Count the pictures and try again! 👀`)).toBeInTheDocument();
-    expect(screen.getByRole('group', { name: 'Pictures to count' })).toBeInTheDocument();
-    // Pictures come up uncounted: counting is the child's job.
-    expect(screen.queryAllByRole('button', { name: /^counted/ })).toHaveLength(0);
+    expect(screen.getByText(`Not ${n}. Build it with pictures and try again! 👀`)).toBeInTheDocument();
+    expect(screen.getByRole('group', { name: 'Build it with pictures' })).toBeInTheDocument();
+    // The builder starts empty: making the pictures is the child's job.
+    expect(screen.queryAllByRole('button', { name: /tap to remove/ })).toHaveLength(0);
     expect(screen.getByText('⭐ 0 pts')).toBeInTheDocument();
   });
 

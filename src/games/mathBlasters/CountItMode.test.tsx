@@ -13,7 +13,7 @@ describe('Count It', () => {
     expect(document.querySelector('.count-answer')).toHaveTextContent('?');
 
     await userEvent.click(screen.getByRole('button', { name: 'answer 4' }));
-    expect(screen.getByText('Not 4. Count the pictures again! 👀')).toBeInTheDocument();
+    expect(screen.getByText('Not 4. Check your pictures and count again! 👀')).toBeInTheDocument();
     expect(document.querySelector('.count-answer')).toHaveTextContent('?');
     expect(speak.mock.calls.flat().join(' ')).not.toMatch(/\b5\b/);
 
@@ -26,6 +26,6 @@ describe('Count It', () => {
     const { speech } = fakeSpeech();
     render(<CountItMode speech={speech} />);
     await userEvent.click(screen.getByRole('button', { name: /Subtract/ }));
-    expect(screen.getByText('Subtract 2: tap to cross out 2 ✖')).toBeInTheDocument();
+    expect(screen.getByText('Make 3, then subtract 2')).toBeInTheDocument();
   });
 });

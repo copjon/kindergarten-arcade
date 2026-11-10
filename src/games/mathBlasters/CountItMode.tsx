@@ -3,7 +3,7 @@ import { ALL_FACTS, MAX_NUMBER, counterEmoji, makeFact, spokenFact, type MathOp 
 import { pickRandom } from '../../data/phrases';
 import type { useSpeech } from '../../hooks/useSpeech';
 import { playBlasterSound, playErrorSound } from '../../lib/sound';
-import { Counters } from './Counters';
+import { PictureBuilder } from './PictureBuilder';
 
 type Speech = ReturnType<typeof useSpeech>;
 
@@ -33,9 +33,9 @@ const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n
 const NUMBERS = Array.from({ length: MAX_NUMBER + 1 }, (_, i) => i);
 
 /**
- * Build any fact up to 10 (or roll a random one), work it out with the
- * pictures, and answer on the number pad. The game never counts or gives
- * the answer: the child does the counting and picks the number.
+ * Pick any fact up to 10 (or roll a random one), build it out of pictures,
+ * and answer on the number pad. The game never counts or gives the answer:
+ * the child builds, counts, and picks the number.
  */
 export function CountItMode({ speech }: { speech: Speech }) {
   const { speak } = speech;
@@ -44,7 +44,7 @@ export function CountItMode({ speech }: { speech: Speech }) {
   const [b, setB] = useState(2);
   const [solved, setSolved] = useState(false);
   const [wrong, setWrong] = useState<number | null>(null);
-  const [message, setMessage] = useState('Count the pictures, then pick the answer!');
+  const [message, setMessage] = useState('Build it with pictures, count them, and pick the answer!');
 
   const fact = makeFact(a, op, b);
   // Adding: the total stays within 10. Subtracting: never more than you have.
@@ -59,7 +59,7 @@ export function CountItMode({ speech }: { speech: Speech }) {
     setB(bb);
     setSolved(false);
     setWrong(null);
-    setMessage('Count the pictures, then pick the answer!');
+    setMessage('Build it with pictures, count them, and pick the answer!');
   }
 
   function randomProblem() {
@@ -73,9 +73,9 @@ export function CountItMode({ speech }: { speech: Speech }) {
     if (solved) return;
     if (n !== fact.answer) {
       setWrong(n);
-      setMessage(`Not ${n}. Count the pictures again! 👀`);
+      setMessage(`Not ${n}. Check your pictures and count again! 👀`);
       playErrorSound();
-      speak(`Not ${n}. Count again.`, { rate: 0.85 });
+      speak(`Not ${n}. Check your pictures and count again.`, { rate: 0.85 });
       setTimeout(() => setWrong(null), 450);
       return;
     }
@@ -109,7 +109,7 @@ export function CountItMode({ speech }: { speech: Speech }) {
           <span className={`math-answer count-answer ${solved ? 'solved' : ''}`}>{solved ? fact.answer : '?'}</span>
         </div>
 
-        <Counters key={fact.key} fact={fact} emoji={counterEmoji(fact)} onCount={(n) => speak(String(n), { rate: 1, pitch: 1.2 })} />
+        <PictureBuilder key={fact.key} fact={fact} emoji={counterEmoji(fact)} />
 
         <p className="count-message" aria-live="polite">
           {message}
