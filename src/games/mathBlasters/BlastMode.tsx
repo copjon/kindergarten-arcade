@@ -221,6 +221,10 @@ export function BlastMode({ speech }: { speech: Speech }) {
   }
 
   const showHint = misses >= HINT_AFTER_MISSES && hitAnswer === null;
+  const optionClass = (n: number) =>
+    `invader ${hitAnswer === n ? 'hit' : ''} ${wrongAnswer === n ? 'wrong' : ''} ${
+      showHint && n === fact.answer ? 'hint' : ''
+    }`;
 
   return (
     <section className="quiz-mode">
@@ -262,6 +266,23 @@ export function BlastMode({ speech }: { speech: Speech }) {
 
         {showBuilder && <PictureBuilder key={fact.key} fact={fact} emoji={counterEmoji(fact)} />}
 
+        {showBuilder ? (
+          // While he builds, the UFOs wait off-screen and the answers sit right under his pictures.
+          <div className="answer-pad" role="group" aria-label="Pick the answer">
+            {options.map((n) => (
+              <button
+                key={n}
+                className={optionClass(n)}
+                onClick={() => choose(n)}
+                aria-label={`answer ${n}`}
+              >
+                <span className="invader-word">{n}</span>
+                {hitAnswer === n && <BlastBurst />}
+              </button>
+            ))}
+          </div>
+        ) : null}
+
         <div className="invader-controls">
           <button className="big-btn name" onClick={() => speak(askFor(fact), { rate: 0.85 })}>
             🔊 Hear it
@@ -273,35 +294,35 @@ export function BlastMode({ speech }: { speech: Speech }) {
           )}
         </div>
 
-        <div className="invader-stage">
-          <div
-            key={`${index}-${wave}`}
-            className={`invader-fleet math-fleet ${busy ? 'paused' : ''}`}
-            onAnimationEnd={handleFleetLanded}
-          >
-            {options.map((n, i) => (
-              <button
-                key={n}
-                className={`invader ${hitAnswer === n ? 'hit' : ''} ${wrongAnswer === n ? 'wrong' : ''} ${
-                  showHint && n === fact.answer ? 'hint' : ''
-                }`}
-                style={{ '--wiggle-delay': `${i * -0.25}s` } as CSSProperties}
-                onClick={() => choose(n)}
-                aria-label={`answer ${n}`}
-              >
-                <span className="invader-alien" aria-hidden="true">
-                  {hitAnswer === n ? '💥' : '🛸'}
-                </span>
-                <span className="invader-word">{n}</span>
-                {shotAnswer === n && <LaserShot from="below" />}
-                {hitAnswer === n && <BlastBurst />}
-              </button>
-            ))}
+        {!showBuilder && (
+          <div className="invader-stage">
+            <div
+              key={`${index}-${wave}`}
+              className={`invader-fleet math-fleet ${busy ? 'paused' : ''}`}
+              onAnimationEnd={handleFleetLanded}
+            >
+              {options.map((n, i) => (
+                <button
+                  key={n}
+                  className={optionClass(n)}
+                  style={{ '--wiggle-delay': `${i * -0.25}s` } as CSSProperties}
+                  onClick={() => choose(n)}
+                  aria-label={`answer ${n}`}
+                >
+                  <span className="invader-alien" aria-hidden="true">
+                    {hitAnswer === n ? '💥' : '🛸'}
+                  </span>
+                  <span className="invader-word">{n}</span>
+                  {shotAnswer === n && <LaserShot from="below" />}
+                  {hitAnswer === n && <BlastBurst />}
+                </button>
+              ))}
+            </div>
+            <div className={`cannon ${shotAnswer !== null ? 'firing' : ''}`} aria-hidden="true">
+              🚀
+            </div>
           </div>
-          <div className={`cannon ${shotAnswer !== null ? 'firing' : ''}`} aria-hidden="true">
-            🚀
-          </div>
-        </div>
+        )}
       </div>
     </section>
   );

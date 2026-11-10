@@ -1448,6 +1448,31 @@ button {
   color: var(--ink-soft);
 }
 
+.answer-pad {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  width: 100%;
+  max-width: 420px;
+}
+
+.answer-pad .invader {
+  padding: 12px 2px;
+  animation: none;
+}
+
+.answer-pad .invader.wrong {
+  animation: shakex 0.4s ease;
+}
+
+.answer-pad .invader.hit {
+  animation: rightBlast 0.4s ease;
+}
+
+.answer-pad .invader.hint {
+  animation: hint-glow 0.9s ease-in-out infinite;
+}
+
 .math-fleet {
   /* Counting takes longer than reading a word, so the fleet comes down slower. */
   animation-duration: 20s;

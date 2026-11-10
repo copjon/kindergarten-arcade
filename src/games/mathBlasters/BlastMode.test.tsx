@@ -42,12 +42,28 @@ describe('Math Blasters gameplay', () => {
     expect(screen.getByText('⭐ 0 pts')).toBeInTheDocument();
   });
 
+  it('opening the builder swaps the UFOs for answer buttons right under the pictures', async () => {
+    const { answer } = await startGame();
+    expect(document.querySelector('.invader-stage')).toBeInTheDocument();
+    await userEvent.click(screen.getByRole('button', { name: /Build it/ }));
+    expect(document.querySelector('.invader-stage')).not.toBeInTheDocument();
+    const pad = screen.getByRole('group', { name: 'Pick the answer' });
+    expect(pad.querySelectorAll('button')).toHaveLength(4);
+    await userEvent.click(screen.getByRole('button', { name: `answer ${answer}` }));
+    expect(screen.getByRole('button', { name: `answer ${answer}` })).toHaveClass('hit');
+    await waitFor(() => expect(screen.getByText('Problem 2 of 10')).toBeInTheDocument(), { timeout: 2000 });
+    // Next problem starts back with the UFOs.
+    expect(document.querySelector('.invader-stage')).toBeInTheDocument();
+  });
+
   it('highlights the right answer after two misses', async () => {
-    const { wrong, right } = await startGame();
-    await userEvent.click(wrong[0]);
-    expect(right).not.toHaveClass('hint');
-    await userEvent.click(wrong[1]);
-    expect(right).toHaveClass('hint');
+    const { wrong, answer } = await startGame();
+    const wrongNames = wrong.map((b) => b.getAttribute('aria-label')!);
+    const right = () => screen.getByRole('button', { name: `answer ${answer}` });
+    await userEvent.click(screen.getByRole('button', { name: wrongNames[0] }));
+    expect(right()).not.toHaveClass('hint');
+    await userEvent.click(screen.getByRole('button', { name: wrongNames[1] }));
+    expect(right()).toHaveClass('hint');
   });
 
   it('a direct hit scores, says the whole fact, and moves on', async () => {
